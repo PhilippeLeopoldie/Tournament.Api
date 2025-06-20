@@ -1,6 +1,6 @@
 ﻿namespace Tournament.Core;
 
-public class TournamentDetails
+public class Tournament
 {
     public int Id { get; set; }
     public string Title { get; set; }
