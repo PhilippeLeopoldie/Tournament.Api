@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using Tournament.Api.Extentions;
 using Tournament.Data.Data;
 
 namespace Tournament.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddDbContext<TournamentApiContext>(options =>
@@ -24,12 +26,13 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
-
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            await app.SeedDataAsync();
         }
 
         app.UseHttpsRedirection();

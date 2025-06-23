@@ -18,7 +18,9 @@ public static class ApplicationBuilderExtensions
             }
             try
             {
-                // var tournaments = SeedData(10);
+                var tournaments = SeedData.GenerateTournament(10);
+                tournamentContext.AddRange(tournaments);
+                await tournamentContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Core;
 
-namespace Tournament.Data.Data
-{
-    public class TournamentApiContext : DbContext
-    {
-        public TournamentApiContext (DbContextOptions<TournamentApiContext> options)
-            : base(options)
-        {
-        }
+namespace Tournament.Data.Data;
 
-        public DbSet<TournamentDetails> TournamentDetails { get; set; } = default!;
-        public DbSet<Game> Game { get; set; } = default!;
+public class TournamentApiContext : DbContext
+{
+    public TournamentApiContext (DbContextOptions<TournamentApiContext> options)
+        : base(options)
+    {
     }
+
+    public DbSet<TournamentDetails> TournamentDetails { get; set; } = default!;
+    public DbSet<Game> Game { get; set; } = default!;
 }
