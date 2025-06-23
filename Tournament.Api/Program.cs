@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Tournament.Api.Extentions;
+using Tournament.Core.Repositories;
 using Tournament.Data.Data;
+using Tournament.Data.Data.Repositories;
 
 namespace Tournament.Api;
 
@@ -15,6 +17,7 @@ public class Program
             options.UseSqlServer(builder.Configuration
             .GetConnectionString("TournamentApiContext") ??
             throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Add services to the container.
 
