@@ -23,14 +23,14 @@ namespace Tournament.Api.Controllers
 
         // GET: api/TournamentDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Core.Tournament>>> GetTournamentDetails()
+        public async Task<ActionResult<IEnumerable<TournamentDetails>>> GetTournamentDetails()
         {
             return await _context.TournamentDetails.ToListAsync();
         }
 
         // GET: api/TournamentDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Core.Tournament>> GetTournamentDetails(int id)
+        public async Task<ActionResult<TournamentDetails>> GetTournamentDetails(int id)
         {
             var tournamentDetails = await _context.TournamentDetails.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace Tournament.Api.Controllers
         // PUT: api/TournamentDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournamentDetails(int id, Core.Tournament tournamentDetails)
+        public async Task<IActionResult> PutTournamentDetails(int id, TournamentDetails tournamentDetails)
         {
             if (id != tournamentDetails.Id)
             {
@@ -76,7 +76,7 @@ namespace Tournament.Api.Controllers
         // POST: api/TournamentDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Core.Tournament>> PostTournamentDetails(Core.Tournament tournamentDetails)
+        public async Task<ActionResult<TournamentDetails>> PostTournamentDetails(Core.TournamentDetails tournamentDetails)
         {
             _context.TournamentDetails.Add(tournamentDetails);
             await _context.SaveChangesAsync();
