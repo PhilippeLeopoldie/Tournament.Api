@@ -15,19 +15,13 @@ namespace Tournament.Api.Controllers
     [ApiController]
     public class TournamentsController(IUnitOfWork unitOfWork) : ControllerBase
     {
-        //private readonly TournamentApiContext _context;
-
-        //public TournamentsController(TournamentApiContext context)
-        //{
-        //    _context = context;
-        //}
 
         // GET: api/TournamentDetails
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TournamentDetails>>> GetTournamentDetails()
         {
             return Ok(await unitOfWork.TournamentRepository.GetAllAsync());
-            //return await _context.TournamentDetails.ToListAsync();
+            
         }
 
         // GET: api/TournamentDetails/5
@@ -43,7 +37,7 @@ namespace Tournament.Api.Controllers
 
             return tournamentDetails;
         }
-        /*
+        
         // PUT: api/TournamentDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -54,17 +48,16 @@ namespace Tournament.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(tournamentDetails).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                 unitOfWork.TournamentRepository.Update(tournamentDetails);
+                 await unitOfWork.CompleteAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TournamentDetailsExists(id))
+                if (!await unitOfWork.TournamentRepository.AnyAsync(id))
                 {
-                    return NotFound();
+                    return NotFound($"No tournament with id: {id} found!");
                 }
                 else
                 {
@@ -74,7 +67,7 @@ namespace Tournament.Api.Controllers
 
             return NoContent();
         }
-
+        /*
         // POST: api/TournamentDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
