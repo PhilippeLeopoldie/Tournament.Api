@@ -16,9 +16,9 @@ public class TournamentRepository(TournamentApiContext context) : ITournamentRep
         throw new NotImplementedException();
     }
 
-    public Task<bool>AnyAsync(int id)
+    public async Task<bool>AnyAsync(int id)
     {
-        throw new NotImplementedException();
+        return await context.TournamentDetails.AnyAsync(tournament => tournament.Id == id);
     }
 
     public async Task<IEnumerable<TournamentDetails>> GetAllAsync()
