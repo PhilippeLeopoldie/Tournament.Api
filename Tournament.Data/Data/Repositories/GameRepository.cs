@@ -8,7 +8,7 @@ using Tournament.Core.Repositories;
 
 namespace Tournament.Data.Data.Repositories;
 
-public class GameRepository : IGameRepository
+public class GameRepository(TournamentApiContext context) : IGameRepository
 {
     void IGameRepository.Add(Game game)
     {
