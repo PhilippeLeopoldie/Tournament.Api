@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Tournament.Core.Repositories;
+
+public interface ITournamentRepository
+{
+    Task<IEnumerable<TournamentDetails>> GetAllAsync();
+    Task<TournamentDetails> GetAsync(int id);
+    Task<bool> AnyAsync(int id);
+    void Add(TournamentDetails tournamentDetails);
+    void Update(TournamentDetails tournamentDetails);
+    void Remove(TournamentDetails tournamentDetails);
+}
