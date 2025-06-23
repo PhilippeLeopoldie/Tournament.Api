@@ -8,10 +8,10 @@ namespace Tournament.Core.Repositories;
 
 public interface ITournamentRepository
 {
-    Task<IEnumerable<TournamentDetails>> GetAllAsync();
-    Task<TournamentDetails> GetAsync(int id);
-    Task<bool> AnyAsync(int id);
-    void Add(TournamentDetails tournamentDetails);
-    void Update(TournamentDetails tournamentDetails);
-    void Remove(TournamentDetails tournamentDetails);
+    public Task<IEnumerable<TournamentDetails>> GetAllAsync();
+    public Task<TournamentDetails> GetAsync(int id);
+    public Task<bool> AnyAsync(int id);
+    public void Add(TournamentDetails tournamentDetails);
+    public void Update(TournamentDetails tournamentDetails);
+    public void Remove(TournamentDetails tournamentDetails);
 }
