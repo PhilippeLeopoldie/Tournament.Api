@@ -21,14 +21,14 @@ public class TournamentRepository(TournamentApiContext context) : ITournamentRep
         throw new NotImplementedException();
     }
 
-    Task<IEnumerable<TournamentDetails>> ITournamentRepository.GetAllAsync()
+    async Task<IEnumerable<TournamentDetails>> ITournamentRepository.GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.TournamentDetails.ToListAsync();
     }
 
-    Task<TournamentDetails> ITournamentRepository.GetAsync(int id)
+    async Task<TournamentDetails> ITournamentRepository.GetAsync(int id)
     {
-        throw new NotImplementedException();
+        return await context.TournamentDetails.FindAsync(id);
     }
 
     void ITournamentRepository.Remove(TournamentDetails tournamentDetails)
