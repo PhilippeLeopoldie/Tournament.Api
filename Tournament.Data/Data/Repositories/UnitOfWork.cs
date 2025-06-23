@@ -8,17 +8,13 @@ using Tournament.Core.Repositories;
 namespace Tournament.Data.Data.Repositories;
 
 public class UnitOfWork(
-    TournamentApiContext context,
-    ITournamentRepository tournamentRepository,
-    IGameRepository gameRepository
+    TournamentApiContext context
     ) : IUnitOfWork
 {
 
-    public ITournamentRepository TournamentRepository => tournamentRepository;
+    public ITournamentRepository TournamentRepository { get; } = new TournamentRepository(context);
 
-    public IGameRepository GameRepository => gameRepository;
-
-    
+    public IGameRepository GameRepository { get; } = new GameRepository(context);
 
     public async Task<int> CompleteAsync()
     {
