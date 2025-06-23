@@ -6,42 +6,44 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Core;
+using Tournament.Core.Repositories;
 using Tournament.Data.Data;
 
 namespace Tournament.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentsController : ControllerBase
+    public class TournamentsController(IUnitOfWork unitOfWork) : ControllerBase
     {
-        private readonly TournamentApiContext _context;
+        //private readonly TournamentApiContext _context;
 
-        public TournamentsController(TournamentApiContext context)
-        {
-            _context = context;
-        }
+        //public TournamentsController(TournamentApiContext context)
+        //{
+        //    _context = context;
+        //}
 
         // GET: api/TournamentDetails
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TournamentDetails>>> GetTournamentDetails()
         {
-            return await _context.TournamentDetails.ToListAsync();
+            return Ok(await unitOfWork.TournamentRepository.GetAllAsync());
+            //return await _context.TournamentDetails.ToListAsync();
         }
 
         // GET: api/TournamentDetails/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TournamentDetails>> GetTournamentDetails(int id)
         {
-            var tournamentDetails = await _context.TournamentDetails.FindAsync(id);
+            var tournamentDetails = await unitOfWork.TournamentRepository.GetAsync(id);
 
-            if (tournamentDetails == null)
+            if (tournamentDetails is null)
             {
-                return NotFound();
+                return NotFound($"No tournament with id:{id} found!");
             }
 
             return tournamentDetails;
         }
-
+        /*
         // PUT: api/TournamentDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -103,6 +105,6 @@ namespace Tournament.Api.Controllers
         private bool TournamentDetailsExists(int id)
         {
             return _context.TournamentDetails.Any(e => e.Id == id);
-        }
+        }*/
     }
 }
