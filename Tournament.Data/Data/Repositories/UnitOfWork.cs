@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tournament.Core.Repositories;
+﻿using Tournament.Core.Repositories;
 
 namespace Tournament.Data.Data.Repositories;
 
-public class UnitOfWork(
-    TournamentApiContext context
-    ) : IUnitOfWork
+public class UnitOfWork: IUnitOfWork
 {
+    private readonly TournamentApiContext _context;
+    public ITournamentRepository TournamentRepository { get; }
+    public IGameRepository GameRepository { get; } 
 
-    public ITournamentRepository TournamentRepository { get; } = new TournamentRepository(context);
-
-    public IGameRepository GameRepository { get; } = new GameRepository(context);
-
-    public async Task<int> CompleteAsync()
+    public UnitOfWork(TournamentApiContext context)
     {
-        return await context.SaveChangesAsync();
+        _context = context;
+        TournamentRepository = new TournamentRepository(context);
+        GameRepository = new GameRepository(context);
+    }
+
+    public async Task CompleteAsync()
+    {
+         await _context.SaveChangesAsync();
     }
 
     public void Dispose()
     {
-        context.Dispose();
+        _context.Dispose();
     }
 }

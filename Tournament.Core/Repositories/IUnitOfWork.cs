@@ -10,5 +10,5 @@ public interface IUnitOfWork : IDisposable
 {
     ITournamentRepository TournamentRepository { get; }
     IGameRepository GameRepository { get; }
-    Task<int> CompleteAsync();
+    Task CompleteAsync();
 }
