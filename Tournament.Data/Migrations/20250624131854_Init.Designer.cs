@@ -12,7 +12,7 @@ using Tournament.Data.Data;
 namespace Tournament.Data.Migrations
 {
     [DbContext(typeof(TournamentApiContext))]
-    [Migration("20250619105925_Init")]
+    [Migration("20250624131854_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -40,20 +40,17 @@ namespace Tournament.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TournamentDetailsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TtournamentId")
+                    b.Property<int>("TournamentDetailId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TournamentDetailsId");
+                    b.HasIndex("TournamentDetailId");
 
-                    b.ToTable("Game");
+                    b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("Tournament.Core.TournamentDetails", b =>
+            modelBuilder.Entity("Tournament.Core.TournamentDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,12 +72,16 @@ namespace Tournament.Data.Migrations
 
             modelBuilder.Entity("Tournament.Core.Game", b =>
                 {
-                    b.HasOne("Tournament.Core.TournamentDetails", null)
+                    b.HasOne("Tournament.Core.TournamentDetail", "TournamentDetail")
                         .WithMany("Games")
-                        .HasForeignKey("TournamentDetailsId");
+                        .HasForeignKey("TournamentDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TournamentDetail");
                 });
 
-            modelBuilder.Entity("Tournament.Core.TournamentDetails", b =>
+            modelBuilder.Entity("Tournament.Core.TournamentDetail", b =>
                 {
                     b.Navigation("Games");
                 });

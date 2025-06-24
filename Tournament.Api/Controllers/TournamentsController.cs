@@ -18,7 +18,7 @@ namespace Tournament.Api.Controllers
 
         // GET: api/TournamentDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentDetails>>> GetTournamentDetails()
+        public async Task<ActionResult<IEnumerable<TournamentDetail>>> GetTournamentDetails()
         {
             return Ok(await unitOfWork.TournamentRepository.GetAllAsync());
             
@@ -26,7 +26,7 @@ namespace Tournament.Api.Controllers
 
         // GET: api/TournamentDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TournamentDetails>> GetTournamentDetails(int id)
+        public async Task<ActionResult<TournamentDetail>> GetTournamentDetails(int id)
         {
             var tournamentDetails = await unitOfWork.TournamentRepository.GetAsync(id);
 
@@ -41,7 +41,7 @@ namespace Tournament.Api.Controllers
         // PUT: api/TournamentDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournamentDetails(int id, TournamentDetails tournamentDetails)
+        public async Task<IActionResult> PutTournamentDetails(int id, TournamentDetail tournamentDetails)
         {
             if (id != tournamentDetails.Id)
             {
@@ -71,33 +71,28 @@ namespace Tournament.Api.Controllers
         // POST: api/TournamentDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TournamentDetails>> PostTournamentDetails(TournamentDetails tournamentDetails)
+        public async Task<ActionResult<TournamentDetail>> PostTournamentDetails(TournamentDetail tournamentDetails)
         {
             unitOfWork.TournamentRepository.Add(tournamentDetails);
             await unitOfWork.CompleteAsync();
 
             return CreatedAtAction("GetTournamentDetails", new { id = tournamentDetails.Id }, tournamentDetails);
         }
-        /*
+        
         // DELETE: api/TournamentDetails/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournamentDetails(int id)
         {
-            var tournamentDetails = await _context.TournamentDetails.FindAsync(id);
+            var tournamentDetails = await unitOfWork.TournamentRepository.GetAsync(id);
             if (tournamentDetails == null)
             {
-                return NotFound();
+                return NotFound($"Tournament with id:{id} not found!");
             }
 
-            _context.TournamentDetails.Remove(tournamentDetails);
-            await _context.SaveChangesAsync();
+            unitOfWork.TournamentRepository.Delete(tournamentDetails);
+            await unitOfWork.CompleteAsync();
 
             return NoContent();
         }
-
-        private bool TournamentDetailsExists(int id)
-        {
-            return _context.TournamentDetails.Any(e => e.Id == id);
-        }*/
     }
 }

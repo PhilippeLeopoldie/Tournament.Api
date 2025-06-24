@@ -11,7 +11,7 @@ namespace Tournament.Data.Data.Repositories;
 
 public class TournamentRepository(TournamentApiContext context) : ITournamentRepository
 {
-    public void Add(TournamentDetails tournamentDetails)
+    public void Add(TournamentDetail tournamentDetails)
     {
         context.TournamentDetails.Add(tournamentDetails);
     }
@@ -21,22 +21,22 @@ public class TournamentRepository(TournamentApiContext context) : ITournamentRep
         return await context.TournamentDetails.AnyAsync(tournament => tournament.Id == id);
     }
 
-    public async Task<IEnumerable<TournamentDetails>> GetAllAsync()
+    public async Task<IEnumerable<TournamentDetail>> GetAllAsync()
     {
         return await context.TournamentDetails.ToListAsync();
     }
 
-    public async Task<TournamentDetails> GetAsync(int id)
+    public async Task<TournamentDetail> GetAsync(int id)
     {
         return await context.TournamentDetails.FindAsync(id);
     }
 
-    public void Remove(TournamentDetails tournamentDetails)
+    public void Delete(TournamentDetail tournamentDetails)
     {
-        throw new NotImplementedException();
+        context.TournamentDetails.Remove(tournamentDetails);
     }
 
-    public async void Update(TournamentDetails tournamentDetails)
+    public async void Update(TournamentDetail tournamentDetails)
     {
         context.Entry(tournamentDetails).State = EntityState.Modified;
         

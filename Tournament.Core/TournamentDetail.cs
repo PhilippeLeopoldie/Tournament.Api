@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core;
 
-public class TournamentDetails
+public class TournamentDetail
 {
     public int Id { get; set; }
     public string Title { get; set; }

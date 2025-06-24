@@ -26,37 +26,37 @@ namespace Tournament.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Game",
+                name: "Games",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TtournamentId = table.Column<int>(type: "int", nullable: false),
-                    TournamentDetailsId = table.Column<int>(type: "int", nullable: true)
+                    TournamentDetailId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Game", x => x.Id);
+                    table.PrimaryKey("PK_Games", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Game_TournamentDetails_TournamentDetailsId",
-                        column: x => x.TournamentDetailsId,
+                        name: "FK_Games_TournamentDetails_TournamentDetailId",
+                        column: x => x.TournamentDetailId,
                         principalTable: "TournamentDetails",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Game_TournamentDetailsId",
-                table: "Game",
-                column: "TournamentDetailsId");
+                name: "IX_Games_TournamentDetailId",
+                table: "Games",
+                column: "TournamentDetailId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Game");
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "TournamentDetails");
