@@ -13,7 +13,7 @@ public class TournamentRepository(TournamentApiContext context) : ITournamentRep
 {
     public void Add(TournamentDetails tournamentDetails)
     {
-        throw new NotImplementedException();
+        context.TournamentDetails.Add(tournamentDetails);
     }
 
     public async Task<bool>AnyAsync(int id)

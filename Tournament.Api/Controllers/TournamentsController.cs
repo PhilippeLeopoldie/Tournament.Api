@@ -67,18 +67,18 @@ namespace Tournament.Api.Controllers
 
             return NoContent();
         }
-        /*
+        
         // POST: api/TournamentDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TournamentDetails>> PostTournamentDetails(Core.TournamentDetails tournamentDetails)
+        public async Task<ActionResult<TournamentDetails>> PostTournamentDetails(TournamentDetails tournamentDetails)
         {
-            _context.TournamentDetails.Add(tournamentDetails);
-            await _context.SaveChangesAsync();
+            unitOfWork.TournamentRepository.Add(tournamentDetails);
+            await unitOfWork.CompleteAsync();
 
             return CreatedAtAction("GetTournamentDetails", new { id = tournamentDetails.Id }, tournamentDetails);
         }
-
+        /*
         // DELETE: api/TournamentDetails/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournamentDetails(int id)
