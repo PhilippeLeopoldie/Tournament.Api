@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dtos;
 
-public record TournamentUpdateDto : TounamentForManioulationDto
+public record TournamentUpdateDto : TournamentForManipulationDto
 {
     public int Id { get; set; }
 }

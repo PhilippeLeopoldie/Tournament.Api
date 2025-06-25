@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dtos;
 
-public record TournamentCreateDto
+public record TournamentCreateDto:TournamentForManipulationDto
 {
     public IEnumerable<GameDto> ? Games { get; set; }
 }
