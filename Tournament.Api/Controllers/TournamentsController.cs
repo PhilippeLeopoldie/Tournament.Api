@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tournament.Core.Dto;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
 using Tournament.Data.Data;
@@ -13,29 +15,33 @@ namespace Tournament.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentsController(IUnitOfWork unitOfWork) : ControllerBase
+    public class TournamentsController(IUnitOfWork uow, IMapper mapper) : ControllerBase
     {
+        private readonly IUnitOfWork _uow = uow;
+        private readonly IMapper _mapper = mapper;
 
         // GET: api/TournamentDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentDetail>>> GetTournamentDetails()
+        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails()
         {
-            return Ok(await unitOfWork.TournamentRepository.GetAllAsync());
-            
+            var dto = _mapper
+                .Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync());
+            return Ok(dto);
         }
 
         // GET: api/TournamentDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TournamentDetail>> GetTournamentDetails(int id)
+        public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id)
         {
-            var tournamentDetails = await unitOfWork.TournamentRepository.GetAsync(id);
+            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id);
 
             if (tournamentDetails is null)
             {
                 return NotFound($"No tournament with id:{id} found!");
             }
+            var dto = _mapper.Map<TournamentDto>(tournamentDetails);
 
-            return tournamentDetails;
+            return dto;
         }
         
         // PUT: api/TournamentDetails/5
@@ -50,12 +56,12 @@ namespace Tournament.Api.Controllers
 
             try
             {
-                 unitOfWork.TournamentRepository.Update(tournamentDetails);
-                 await unitOfWork.CompleteAsync();
+                 _uow.TournamentRepository.Update(tournamentDetails);
+                 await _uow.CompleteAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await unitOfWork.TournamentRepository.AnyAsync(id))
+                if (!await _uow.TournamentRepository.AnyAsync(id))
                 {
                     return NotFound($"No tournament with id: {id} found!");
                 }
@@ -73,8 +79,8 @@ namespace Tournament.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TournamentDetail>> PostTournamentDetails(TournamentDetail tournamentDetails)
         {
-            unitOfWork.TournamentRepository.Add(tournamentDetails);
-            await unitOfWork.CompleteAsync();
+            _uow.TournamentRepository.Add(tournamentDetails);
+            await _uow.CompleteAsync();
 
             return CreatedAtAction("GetTournamentDetails", new { id = tournamentDetails.Id }, tournamentDetails);
         }
@@ -83,14 +89,14 @@ namespace Tournament.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournamentDetails(int id)
         {
-            var tournamentDetails = await unitOfWork.TournamentRepository.GetAsync(id);
+            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id);
             if (tournamentDetails == null)
             {
                 return NotFound($"Tournament with id:{id} not found!");
             }
 
-            unitOfWork.TournamentRepository.Delete(tournamentDetails);
-            await unitOfWork.CompleteAsync();
+            _uow.TournamentRepository.Delete(tournamentDetails);
+            await _uow.CompleteAsync();
 
             return NoContent();
         }
