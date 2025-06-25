@@ -1,4 +1,4 @@
-﻿namespace Tournament.Core;
+﻿namespace Tournament.Core.Entities;
 
 public class Game
 {
