@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tournament.Core.Dtos;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
-using Tournament.Data.Data;
 
 namespace Tournament.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Tournaments")]
     [ApiController]
     public class TournamentsController(IUnitOfWork uow, IMapper mapper) : ControllerBase
     {
@@ -34,13 +27,12 @@ namespace Tournament.Api.Controllers
         public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id)
         {
             var tournamentDetails = await _uow.TournamentRepository.GetAsync(id);
-
             if (tournamentDetails is null)
             {
                 return NotFound($"No tournament with id:{id} found!");
             }
-            var dto = _mapper.Map<TournamentDto>(tournamentDetails);
 
+            var dto = _mapper.Map<TournamentDto>(tournamentDetails);
             return dto;
         }
         
@@ -53,12 +45,13 @@ namespace Tournament.Api.Controllers
             {
                 return BadRequest();
             }
-            var tournamentExists = await _uow.TournamentRepository.GetAsync(id);
 
+            var tournamentExists = await _uow.TournamentRepository.GetAsync(id);
             if (tournamentExists == null)
             {
                  return NotFound($"No tournament with id: {id} found!");
             }
+
             _mapper.Map(dto, tournamentExists);
             await _uow.CompleteAsync();
             return NoContent();
@@ -88,7 +81,6 @@ namespace Tournament.Api.Controllers
 
             _uow.TournamentRepository.Delete(tournamentDetails);
             await _uow.CompleteAsync();
-
             return NoContent();
         }
     }
