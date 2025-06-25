@@ -14,19 +14,19 @@ public static class SeedData
     {
         var faker = new Faker<TournamentDetail>().Rules((fake,Tournament) => 
         {
-            gameCounter = 1;
-            var nbrOfGame = fake.Random.Int(min: 20, max: 30);
             Tournament.Title = tournamentQueue.Dequeue();
             // Random future date within the next year, with time set to 00:00:00 (midnight)
             Tournament.StartDate = fake.Date.Future(1).Date;
             Tournament.EndDate = Tournament.StartDate.AddMonths(3);
-            Tournament.Games = GenerateGame(nbrOfGame, Tournament.StartDate, Tournament.EndDate);
+            Tournament.Games = GenerateGame(Tournament.StartDate, Tournament.EndDate);
         });
         return faker.Generate(tournamentsTitle.Count());
     }
 
-    private static ICollection<Game> GenerateGame(int nbrOfGame, DateTime startDate, DateTime endDate)
+    private static ICollection<Game> GenerateGame(DateTime startDate, DateTime endDate)
     {
+        var nbrOfGame = new Random().Next(20, 31);
+        gameCounter = 1;
         var gameInterval = (endDate - startDate)/nbrOfGame;
         DateTime currentDate = startDate;
         var faker = new Faker<Game>().Rules((fake, game) => 
