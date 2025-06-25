@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dtos;
 
-public record TournamentDto
+public record TounamentForManioulationDto
 {
     public string Title { get; set; }
     public DateTime StartDate { get; set; }
-    public DateTime EndDate => StartDate.AddMonths(3);
+    public DateTime EndDate { get; set; }
 }
