@@ -6,7 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament.Core.Dto;
+using Tournament.Core.Dtos;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
 using Tournament.Data.Data;
@@ -47,30 +47,20 @@ namespace Tournament.Api.Controllers
         // PUT: api/TournamentDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournamentDetails(int id, TournamentDetail tournamentDetails)
+        public async Task<IActionResult> PutTournamentDetails(int id, TournamentUpdateDto dto)
         {
-            if (id != tournamentDetails.Id)
+            if (id != dto.Id)
             {
                 return BadRequest();
             }
+            var tournamentExists = await _uow.TournamentRepository.GetAsync(id);
 
-            try
+            if (tournamentExists == null)
             {
-                 _uow.TournamentRepository.Update(tournamentDetails);
-                 await _uow.CompleteAsync();
+                 return NotFound($"No tournament with id: {id} found!");
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.TournamentRepository.AnyAsync(id))
-                {
-                    return NotFound($"No tournament with id: {id} found!");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            _mapper.Map(dto, tournamentExists);
+            await _uow.CompleteAsync();
             return NoContent();
         }
         
