@@ -1,6 +1,7 @@
 ﻿using Bogus;
+using Microsoft.VisualBasic;
 using System.Diagnostics.Metrics;
-using Tournament.Core;
+using Tournament.Core.Entities;
 
 namespace Tournament.Data.Data;
 
@@ -11,38 +12,29 @@ public static class SeedData
     private static int gameCounter;
     public static List<TournamentDetail> GenerateTournament(int nbrTournaments)
     {
-        //string[] tournamentsTitle = { "UEFA champions league", "BasketBall europa league", "HandBall europa league" };
-        //var tournamentQueue = new Queue<string>(tournamentsTitle);
-         
         var faker = new Faker<TournamentDetail>().Rules((fake,Tournament) => 
         {
             gameCounter = 1;
             var nbrOfGame = fake.Random.Int(min: 20, max: 30);
             Tournament.Title = tournamentQueue.Dequeue();
-            Tournament.StartDate = fake.Date.Future(1);
-            ;
-            Tournament.Games = GenerateGame(nbrOfGame, Tournament.StartDate);
+            // Random future date within the next year, with time set to 00:00:00 (midnight)
+            Tournament.StartDate = fake.Date.Future(1).Date;
+            Tournament.EndDate = Tournament.StartDate.AddMonths(3);
+            Tournament.Games = GenerateGame(nbrOfGame, Tournament.StartDate, Tournament.EndDate);
         });
-        return faker.Generate(tournamentsTitle.Length);
+        return faker.Generate(tournamentsTitle.Count());
     }
 
-    private static ICollection<Game> GenerateGame(int nbrOfGame, DateTime tournamentStartDate)
+    private static ICollection<Game> GenerateGame(int nbrOfGame, DateTime startDate, DateTime endDate)
     {
-        
+        var gameInterval = (endDate - startDate)/nbrOfGame;
+        DateTime currentDate = startDate;
         var faker = new Faker<Game>().Rules((fake, game) => 
         {
-            //string[] gamesTitle = 
-            //{
-            //    "PSG-Real VS Madrid",
-            //    "Barcelone VS Juventus",
-            //    "Manchester VS Napoli",
-            //    "Lyon VS Olympiakos", 
-            //    "Fenerbache VS Milan" 
-            //};
-            var periodOfTournament = fake.Random.Int(min: 1, max: 365);
-            var timeOfGame = fake.Date.BetweenTimeOnly(new TimeOnly(8, 0), new TimeOnly(17, 0)).ToTimeSpan();
+            var matchTime = fake.Date.BetweenTimeOnly(new TimeOnly(8, 0), new TimeOnly(17, 0)).ToTimeSpan();
             game.Title = $"Match_{gameCounter++}";
-            game.Time = tournamentStartDate.AddDays(periodOfTournament) + timeOfGame;
+            game.Time = currentDate.Date + matchTime;
+            currentDate = currentDate.Add(gameInterval);
         });
         return faker.Generate(nbrOfGame);
     }
