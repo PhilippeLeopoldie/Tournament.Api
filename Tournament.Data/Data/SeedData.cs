@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Tournament.Core.Entities;
+using Domain.Models.Entities;
 
 namespace Tournament.Infrastructure.Data;
 

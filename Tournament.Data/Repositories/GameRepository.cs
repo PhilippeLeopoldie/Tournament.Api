@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Domain.Contracts;
+using Domain.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tournament.Core.Entities;
-using Tournament.Core.Repositories;
 using Tournament.Infrastructure.Data;
 
 namespace Tournament.Infrastructure.Repositories;

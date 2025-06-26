@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Domain.Contracts;
+using Domain.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Tournament.Core.Dtos;
-using Tournament.Core.Entities;
-using Tournament.Core.Repositories;
+using Tournaments.Shared.Dtos;
 
 namespace Tournament.Api.Controllers
 {

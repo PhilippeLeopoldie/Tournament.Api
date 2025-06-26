@@ -1,4 +1,5 @@
-﻿using Tournament.Core.Repositories;
+﻿using Domain.Contracts;
+
 //using Tournament.Data.Data.Repositories;
 using Tournament.Infrastructure.Data;
 

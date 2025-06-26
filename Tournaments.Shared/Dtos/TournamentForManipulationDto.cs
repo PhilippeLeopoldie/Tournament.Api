@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tournament.Core.Dtos;
+namespace Tournaments.Shared.Dtos;
 
 public record TournamentForManipulationDto
 {
