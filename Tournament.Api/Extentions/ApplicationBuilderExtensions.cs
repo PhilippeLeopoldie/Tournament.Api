@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tournament.Data.Data;
+using Tournament.Infrastructure.Data;
 
 namespace Tournament.Api.Extentions;
 

@@ -1,6 +1,8 @@
 ﻿using Tournament.Core.Repositories;
+//using Tournament.Data.Data.Repositories;
+using Tournament.Infrastructure.Data;
 
-namespace Tournament.Data.Data.Repositories;
+namespace Tournament.Infrastructure.Repositories;
 
 public class UnitOfWork: IUnitOfWork
 {

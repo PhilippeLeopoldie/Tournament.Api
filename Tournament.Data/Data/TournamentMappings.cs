@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Tournament.Core.Dtos;
 using Tournament.Core.Entities;
 
-namespace Tournament.Data.Data;
+namespace Tournament.Infrastructure.Data;
 
 public class TournamentMappings : Profile
 {

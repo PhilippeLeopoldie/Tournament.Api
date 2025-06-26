@@ -1,9 +1,7 @@
 ﻿using Bogus;
-using Microsoft.VisualBasic;
-using System.Diagnostics.Metrics;
 using Tournament.Core.Entities;
 
-namespace Tournament.Data.Data;
+namespace Tournament.Infrastructure.Data;
 
 public static class SeedData
 {

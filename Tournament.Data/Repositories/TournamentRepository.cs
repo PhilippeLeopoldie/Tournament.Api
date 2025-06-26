@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
+using Tournament.Infrastructure.Data;
 
-namespace Tournament.Data.Data.Repositories;
+namespace Tournament.Infrastructure.Repositories;
 
 public class TournamentRepository(TournamentApiContext context) : ITournamentRepository
 {

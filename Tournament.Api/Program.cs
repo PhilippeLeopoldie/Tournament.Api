@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Tournament.Api.Extentions;
 using Tournament.Core.Repositories;
-using Tournament.Data.Data;
-using Tournament.Data.Data.Repositories;
+using Tournament.Infrastructure.Data;
+using Tournament.Infrastructure.Repositories;
 
 namespace Tournament.Api;
 
