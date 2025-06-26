@@ -15,10 +15,11 @@ namespace Tournament.Api.Controllers
 
         // GET: api/TournamentDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails()
+        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails(bool includeTournament)
         {
-            var dto = _mapper
-                .Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync());
+            var dto = includeTournament 
+                ? _mapper.Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync(true))
+                : _mapper.Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync());
             return Ok(dto);
         }
 
@@ -26,7 +27,8 @@ namespace Tournament.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id)
         {
-            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id);
+            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, false);
+                                                
             if (tournamentDetails is null)
             {
                 return NotFound($"No tournament with id:{id} found!");
@@ -46,7 +48,7 @@ namespace Tournament.Api.Controllers
                 return BadRequest();
             }
 
-            var tournamentExists = await _uow.TournamentRepository.GetAsync(id);
+            var tournamentExists = await _uow.TournamentRepository.GetAsync(id,true);
             if (tournamentExists == null)
             {
                  return NotFound($"No tournament with id: {id} found!");
@@ -73,7 +75,7 @@ namespace Tournament.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournamentDetails(int id)
         {
-            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id);
+            var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, true);
             if (tournamentDetails == null)
             {
                 return NotFound($"Tournament with id:{id} not found!");
