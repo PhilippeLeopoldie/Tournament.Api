@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tournament.Infrastructure.Data;
 
-namespace Tournament.Api.Extentions;
+namespace Tournament.Api.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
@@ -18,7 +18,7 @@ public static class ApplicationBuilderExtensions
             }
             try
             {
-                var tournaments = SeedData.GenerateTournament(10);
+                var tournaments = SeedData.GenerateTournament();
                 tournamentContext.AddRange(tournaments);
                 await tournamentContext.SaveChangesAsync();
             }

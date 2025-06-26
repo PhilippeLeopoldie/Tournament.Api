@@ -8,7 +8,7 @@ public static class SeedData
     private static readonly string[] tournamentsTitle = { "UEFA champions league", "BasketBall europa league", "HandBall europa league" };
     private static Queue<string> tournamentQueue = new Queue<string>(tournamentsTitle);
     private static int gameCounter;
-    public static List<TournamentDetail> GenerateTournament(int nbrTournaments)
+    public static List<TournamentDetail> GenerateTournament()
     {
         var faker = new Faker<TournamentDetail>().Rules((fake,Tournament) => 
         {

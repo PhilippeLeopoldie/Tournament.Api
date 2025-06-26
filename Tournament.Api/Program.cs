@@ -2,7 +2,7 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using Tournament.Api.Extentions;
+using Tournament.Api.Extensions;
 using Tournament.Infrastructure.Data;
 using Tournament.Infrastructure.Repositories;
 
