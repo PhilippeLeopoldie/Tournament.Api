@@ -63,7 +63,7 @@ namespace Tournament.Api.Controllers
         public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromQuery]TournamentCreateDto dto)
         {
             var tournament = _mapper.Map<TournamentDetail>(dto);
-            _uow.TournamentRepository.Add(tournament);
+            _uow.TournamentRepository.Create(tournament);
             await _uow.CompleteAsync();
             var createdTournament = _mapper.Map<TournamentDto>(tournament);
             return CreatedAtAction("GetTournamentDetails", new { id = createdTournament.Id }, createdTournament);

@@ -13,7 +13,7 @@ public interface ITournamentRepository
      Task<IEnumerable<TournamentDetail>> GetAllAsync();
      Task<TournamentDetail> GetAsync(int id);
      Task<bool> AnyAsync(int id);
-     void Add(TournamentDetail tournamentDetails);
+     void Create(TournamentDetail tournamentDetails);
      void Update(TournamentDetail tournamentDetails);
      void Delete(TournamentDetail tournamentDetails);
 }

@@ -12,7 +12,7 @@ namespace Tournament.Infrastructure.Repositories;
 
 public class TournamentRepository(TournamentApiContext context) : ITournamentRepository
 {
-    public void Add(TournamentDetail tournamentDetails)
+    public void Create(TournamentDetail tournamentDetails)
     {
         context.TournamentDetails.Add(tournamentDetails);
     }
