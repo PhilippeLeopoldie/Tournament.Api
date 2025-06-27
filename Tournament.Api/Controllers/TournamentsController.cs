@@ -1,17 +1,29 @@
 ﻿using AutoMapper;
+using Azure;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Tournament.Infrastructure.Data;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Api.Controllers;
 
 [Route("api/Tournaments")]
 [ApiController]
-public class TournamentsController(IUnitOfWork uow, IMapper mapper) : ControllerBase
+public class TournamentsController : ControllerBase
 {
-    private readonly IUnitOfWork _uow = uow;
-    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _uow; 
+    private readonly IMapper _mapper; 
+    
+
+    public TournamentsController (IUnitOfWork uow, IMapper mapper, TournamentApiContext context)
+    {
+        _uow = uow;
+        _mapper = mapper;
+    }
 
     // GET: api/TournamentDetails
     [HttpGet]
@@ -31,9 +43,7 @@ public class TournamentsController(IUnitOfWork uow, IMapper mapper) : Controller
         var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, includeGames);
                                             
         if (tournamentDetails is null)
-        {
             return NotFound($"No tournament with id:{id} found!");
-        }
 
         var dto = _mapper.Map<TournamentDto>(tournamentDetails);
         return dto;
@@ -44,18 +54,41 @@ public class TournamentsController(IUnitOfWork uow, IMapper mapper) : Controller
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentDetails(int id, TournamentUpdateDto dto)
     {
-        if (id != dto.Id)
-        {
-            return BadRequest();
-        }
+        if (id != dto.Id) return BadRequest();
 
-        var tournamentExists = await _uow.TournamentRepository.GetAsync(id,true);
-        if (tournamentExists == null)
-        {
+        var tournamentToUpdate = await _uow.TournamentRepository.GetAsync(
+            id,
+            includeGames:false,
+            trackChanges: true
+            );
+        if (tournamentToUpdate == null)
              return NotFound($"No tournament with id: {id} found!");
-        }
+        
+        _mapper.Map(dto, tournamentToUpdate);
+        await _uow.CompleteAsync();
+        
+        return NoContent();
+    }
 
-        _mapper.Map(dto, tournamentExists);
+    [HttpPatch("{tournamentId}")]
+    public async Task<ActionResult> PatchTournament(int tournamentId, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+    {
+        if (patchDocument == null) return BadRequest("No patchDocument");
+
+        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
+            tournamentId,
+            includeGames: true,
+            trackChanges: true
+            );
+        if (tournamentToPatch == null)
+            return NotFound($"No tournament with id: {tournamentId} found!");
+
+        var dto = _mapper.Map<TournamentUpdateDto>(tournamentToPatch);
+        patchDocument.ApplyTo(dto, ModelState);
+        TryValidateModel(dto);
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
+        _mapper.Map(dto, tournamentToPatch);
         await _uow.CompleteAsync();
         return NoContent();
     }
@@ -78,12 +111,12 @@ public class TournamentsController(IUnitOfWork uow, IMapper mapper) : Controller
     {
         var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, true);
         if (tournamentDetails == null)
-        {
             return NotFound($"Tournament with id:{id} not found!");
-        }
 
         _uow.TournamentRepository.Delete(tournamentDetails);
         await _uow.CompleteAsync();
         return NoContent();
     }
+
+
 }
