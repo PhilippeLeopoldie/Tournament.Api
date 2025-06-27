@@ -35,9 +35,17 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
                             : await FindAll(trackChanges).ToListAsync();
     }
 
-    public async Task<TournamentDetail> GetAsync(int id, bool trackChanges = false)
+    public async Task<TournamentDetail> GetAsync(
+         int id,
+         bool includeGames = false,
+         bool trackChanges = false)
     {  
-        return await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges).FirstOrDefaultAsync();
+        return includeGames ?
+            await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges)
+            .Include(tournament => tournament.Games)
+            .FirstOrDefaultAsync()
+            : await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges)
+            .FirstOrDefaultAsync();
     }
 
     /*public void Delete(TournamentDetail tournamentDetails)

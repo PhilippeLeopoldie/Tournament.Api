@@ -25,9 +25,9 @@ public class TournamentsController(IUnitOfWork uow, IMapper mapper) : Controller
 
     // GET: api/TournamentDetails/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id)
+    public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames)
     {
-        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, false);
+        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, includeGames);
                                             
         if (tournamentDetails is null)
         {

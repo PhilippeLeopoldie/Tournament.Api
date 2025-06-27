@@ -14,8 +14,13 @@ public interface ITournamentRepository
         bool includeGames = false,
         bool trackChanges = false
         );
-     Task<TournamentDetail> GetAsync(int id, bool trackChanges);
+
+     Task<TournamentDetail> GetAsync(
+         int id,
+         bool includeGames = false,
+         bool trackChanges= false);
      Task<bool> AnyAsync(int id);
+
      void Create(TournamentDetail tournamentDetails);
      //void Update(TournamentDetail tournamentDetails);
      void Delete(TournamentDetail tournamentDetails);
