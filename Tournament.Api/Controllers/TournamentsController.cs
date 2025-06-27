@@ -17,9 +17,10 @@ public class TournamentsController(IUnitOfWork uow, IMapper mapper) : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails(bool includeGames)
     {
-        var dto = includeGames 
-            ? _mapper.Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync(true))
-            : _mapper.Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository.GetAllAsync());
+        var dto = _mapper
+            .Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository
+            .GetAllAsync(includeGames));
+
         return Ok(dto);
     }
 
