@@ -14,6 +14,7 @@ public class TournamentApiContext : DbContext
     {
     }
 
-    public DbSet<TournamentDetail> TournamentDetails { get; set; } = default!;
+    //public DbSet<TournamentDetail> TournamentDetails { get; set; } = default!;
+    public DbSet<TournamentDetail> TournamentDetails => Set<TournamentDetail>();
     public DbSet<Game> Games { get; set; } = default!;
 }

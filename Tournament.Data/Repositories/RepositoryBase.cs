@@ -12,37 +12,37 @@ namespace Tournament.Infrastructure.Repositories;
 
 public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
-    protected TournamentApiContext _context;
-    protected DbSet<T> _dbSet;
+    protected TournamentApiContext Context { get; set; }
+    protected DbSet<T> DbSet { get; set; }
 
     public RepositoryBase(TournamentApiContext context)
     {
-        _context = context;
-        _dbSet = context.Set<T>();
+        Context = context;
+        DbSet = context.Set<T>();
     }
 
     public void Create(T entity)
     {
-        _dbSet.Add(entity);
+        DbSet.Add(entity);
     }
 
     public void Delete(T entity)
     {
-        _dbSet.Remove(entity);
+        DbSet.Remove(entity);
     }
 
     public IQueryable<T> FindAll(bool trackChanges = false)
     {
-        return trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return trackChanges ? DbSet : DbSet.AsNoTracking();
     }
 
     public IQueryable<T> FindByCondition(Expression<Func<T, bool>> condition, bool trackChanges = false)
     {
-        return trackChanges ? _dbSet.Where(condition) : _dbSet.Where(condition).AsNoTracking();
+        return trackChanges ? DbSet.Where(condition) : DbSet.Where(condition).AsNoTracking();
     }
 
     public void Update(T entity)
     {
-        _dbSet.Update(entity);
+        DbSet.Update(entity);
     }
 }

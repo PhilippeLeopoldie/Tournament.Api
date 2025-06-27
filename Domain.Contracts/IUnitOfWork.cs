@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Contracts;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
     ITournamentRepository TournamentRepository { get; }
     IGameRepository GameRepository { get; }
