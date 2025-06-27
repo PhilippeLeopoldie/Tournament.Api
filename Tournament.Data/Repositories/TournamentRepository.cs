@@ -14,12 +14,8 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
 {
     public TournamentRepository(TournamentApiContext context) : base(context)
     {
-        
-    }
-    public void Create(TournamentDetail tournamentDetails)
-    {
-        Create(tournamentDetails);
-    }
+
+    } 
 
     public async Task<bool>AnyAsync(int id)
     {
