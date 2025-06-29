@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Azure;
 using Domain.Contracts;
 using Domain.Models.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Tournament.Infrastructure.Data;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Api.Controllers;
