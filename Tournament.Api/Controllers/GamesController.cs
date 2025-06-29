@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,16 +33,14 @@ namespace Tournament.Api.Controllers
 
         // GET: api/Games/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        public async Task<ActionResult<GameDto>> GetGame(int id)
         {
-            var game = await _context.Games.FindAsync(id);
+            var game = await _uow.GameRepository.GetAsync(id, trackChanges: false);
 
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return game;
+            if (game == null) 
+                return NotFound($"No game with id:{id} found!");
+            var dto = _mapper.Map<GameDto>(game);
+            return dto;
         }
 
         // PUT: api/Games/5
@@ -91,7 +84,7 @@ namespace Tournament.Api.Controllers
             if (gameToPatch == null) 
                 return NotFound($"No game with id: {id} found!");
 
-            if (gameToPatch.TournamentDetail == null || gameToPatch.TournamentDetail.Id.Equals(tournamentId))
+            if (!gameToPatch.TournamentDetailId.Equals(tournamentId))
                 return NotFound($"Game with ID {id} is not associated with Tournament ID {tournamentId}.");
 
             var dto = _mapper.Map<GameUpdateDto>(gameToPatch);
