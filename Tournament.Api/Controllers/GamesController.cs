@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Humanizer;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,34 +60,20 @@ namespace Tournament.Api.Controllers
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(int id, Game game)
+        public async Task<IActionResult> PutGame(int id, GameUpdateDto dto)
         {
-            if (id != game.Id)
-            {
-                return BadRequest();
-            }
+            if (id != dto.Id) return BadRequest();
 
-            _context.Entry(game).State = EntityState.Modified;
+            var GameToUpdate = await _uow.GameRepository.GetAsync(id, trackChanges: true);
+            if (GameToUpdate == null)
+                return NotFound($"No game with id: '{id}' found!");
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GameExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _mapper.Map(dto, GameToUpdate);
+            await _uow.CompleteAsync();
 
             return NoContent();
         }
-
+        
         [HttpPatch("{id:int}")]
         public async Task<ActionResult> PatchGame(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDoc)
         {
