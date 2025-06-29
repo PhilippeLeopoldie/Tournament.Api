@@ -19,7 +19,7 @@ public class TournamentsController : ControllerBase
     private readonly IMapper _mapper; 
     
 
-    public TournamentsController (IUnitOfWork uow, IMapper mapper, TournamentApiContext context)
+    public TournamentsController (IUnitOfWork uow, IMapper mapper)
     {
         _uow = uow;
         _mapper = mapper;
