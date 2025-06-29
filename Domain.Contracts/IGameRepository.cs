@@ -16,5 +16,5 @@ public interface IGameRepository
     //Task<bool> AnyAsync(int id);
     void Create(Game game);
     //void Update(Game game);
-    void Remove(Game game);
+    void Delete(Game game);
 }

@@ -116,21 +116,13 @@ namespace Tournament.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var game = await _context.Games.FindAsync(id);
+            var game = await _uow.GameRepository.GetAsync(id, trackChanges: true);
             if (game == null)
-            {
-                return NotFound();
-            }
+                return NotFound($"Game with id:{id} not found!");
 
-            _context.Games.Remove(game);
-            await _context.SaveChangesAsync();
-
+            _uow.GameRepository.Delete(game);
+            await _uow.CompleteAsync();
             return NoContent();
-        }
-
-        private bool GameExists(int id)
-        {
-            return _context.Games.Any(e => e.Id == id);
         }
     }
 }
