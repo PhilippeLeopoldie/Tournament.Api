@@ -38,7 +38,18 @@ namespace Tournament.Api.Controllers
             var game = await _uow.GameRepository.GetAsync(id, trackChanges: false);
 
             if (game == null) 
-                return NotFound($"No game with id:{id} found!");
+                return NotFound($"No game with id: '{id}' found!");
+            var dto = _mapper.Map<GameDto>(game);
+            return dto;
+        }
+
+        [HttpGet("title")]
+        public async Task<ActionResult<GameDto>> GetGame(string title)
+        {
+            var game = await _uow.GameRepository.GetAsync(title, trackChanges: false);
+
+            if (game == null)
+                return NotFound($"No game with title: '{title}' found!");
             var dto = _mapper.Map<GameDto>(game);
             return dto;
         }
