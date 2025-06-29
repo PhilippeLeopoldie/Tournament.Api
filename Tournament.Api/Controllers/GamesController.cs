@@ -26,9 +26,11 @@ namespace Tournament.Api.Controllers
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()
         {
-            return await _context.Games.ToListAsync();
+            var dto = _mapper.Map<IEnumerable<GameDto>>( await _uow.GameRepository.GetAllAsync());
+
+            return Ok(dto);
         }
 
         // GET: api/Games/5
