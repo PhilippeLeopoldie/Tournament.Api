@@ -31,6 +31,12 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<Game?> GetAsync(string title, bool trackChanges = false)
+    {
+        return await FindByCondition(game => game.Title.ToLower() == title.ToLower() , trackChanges)
+            .FirstOrDefaultAsync();
+    }
+
     void IGameRepository.Remove(Game game)
     {
         throw new NotImplementedException();
