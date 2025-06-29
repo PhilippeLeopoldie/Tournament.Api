@@ -1,11 +1,6 @@
 ﻿using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tournament.Infrastructure.Data;
 
 namespace Tournament.Infrastructure.Repositories;
@@ -14,7 +9,6 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
 {
     public TournamentRepository(TournamentApiContext context) : base(context)
     {
-
     } 
 
     public async Task<bool>AnyAsync(int id)
@@ -31,7 +25,7 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
                             : await FindAll(trackChanges).ToListAsync();
     }
 
-    public async Task<TournamentDetail> GetAsync(
+    public async Task<TournamentDetail?> GetAsync(
          int id,
          bool includeGames = false,
          bool trackChanges = false)
@@ -43,15 +37,4 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
             : await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges)
             .FirstOrDefaultAsync();
     }
-
-    /*public void Delete(TournamentDetail tournamentDetails)
-    {
-        context.TournamentDetails.Remove(tournamentDetails);
-    }*/
-
-    /*public async void Update(TournamentDetail tournamentDetails)
-    {
-        context.Entry(tournamentDetails).State = EntityState.Modified;
-        
-    }*/
 }
