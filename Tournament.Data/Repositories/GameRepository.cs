@@ -1,16 +1,15 @@
 ﻿using Domain.Contracts;
 using Domain.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Tournament.Infrastructure.Data;
 
 namespace Tournament.Infrastructure.Repositories;
 
-public class GameRepository(TournamentApiContext context) : IGameRepository
+public class GameRepository : RepositoryBase<Game>, IGameRepository
 {
+    public GameRepository(TournamentApiContext context) : base(context)
+    {
+    }
     void IGameRepository.Add(Game game)
     {
         throw new NotImplementedException();
@@ -26,9 +25,10 @@ public class GameRepository(TournamentApiContext context) : IGameRepository
         throw new NotImplementedException();
     }
 
-    Task<Game> IGameRepository.GetAsync(int id)
+    public async Task<Game?> GetAsync(int id, bool trackChanges = false)
     {
-        throw new NotImplementedException();
+       return await FindByCondition(game => game.Id.Equals(id), trackChanges)
+            .FirstOrDefaultAsync();
     }
 
     void IGameRepository.Remove(Game game)
