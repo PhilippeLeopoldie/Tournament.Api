@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Infrastructure.Data;
+using Tournaments.Shared.Dtos;
 
 namespace Tournament.Api.Controllers
 {
@@ -15,10 +19,14 @@ namespace Tournament.Api.Controllers
     public class GamesController : ControllerBase
     {
         private readonly TournamentApiContext _context;
+        private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public GamesController(TournamentApiContext context)
+        public GamesController(TournamentApiContext context, IUnitOfWork uow, IMapper mapper)
         {
             _context = context;
+            _uow = uow;
+            _mapper = mapper;
         }
 
         // GET: api/Games
@@ -70,6 +78,32 @@ namespace Tournament.Api.Controllers
                 }
             }
 
+            return NoContent();
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult> PatchGame(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDoc)
+        {
+            if (patchDoc == null) return BadRequest("No Patch document");
+            
+            var gameToPatch = await _uow.GameRepository.GetAsync(id, trackChanges: true);
+
+            if (gameToPatch == null) 
+                return NotFound($"No game with id: {id} found!");
+
+            if (gameToPatch.TournamentDetail == null || gameToPatch.TournamentDetail.Id.Equals(tournamentId))
+                return NotFound($"Game with ID {id} is not associated with Tournament ID {tournamentId}.");
+
+            var dto = _mapper.Map<GameUpdateDto>(gameToPatch);
+
+            patchDoc.ApplyTo(dto, ModelState);
+            TryValidateModel(dto);
+            if (!ModelState.IsValid)
+            {
+                return UnprocessableEntity(ModelState);
+            }
+            _mapper.Map(dto, gameToPatch);
+            await _uow.CompleteAsync();
             return NoContent();
         }
 
