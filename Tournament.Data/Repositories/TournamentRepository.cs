@@ -37,12 +37,12 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
          int id,
          bool includeGames = false,
          bool trackChanges = false)
-    {  
-        return includeGames ?
-            await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges)
-            .Include(tournament => tournament.Games)
-            .FirstOrDefaultAsync()
-            : await FindByCondition(tournament => tournament.Id.Equals(id), trackChanges)
-            .FirstOrDefaultAsync();
+    {
+        var query = FindByCondition(tournament => tournament.Id.Equals(id), trackChanges);
+
+        if (includeGames) 
+            query = query.Include(tournament => tournament.Games);
+
+        return await query.FirstOrDefaultAsync();
     }
 }
