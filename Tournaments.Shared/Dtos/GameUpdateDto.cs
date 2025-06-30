@@ -1,6 +1,4 @@
-﻿
-
-namespace Tournaments.Shared.Dtos;
+﻿namespace Tournaments.Shared.Dtos;
 
 public record GameUpdateDto : GameForManipulationDto
 {

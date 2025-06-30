@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
-using Humanizer;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Tournament.Infrastructure.Data;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Api.Controllers
@@ -14,13 +11,11 @@ namespace Tournament.Api.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly TournamentApiContext _context;
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public GamesController(TournamentApiContext context, IUnitOfWork uow, IMapper mapper)
+        public GamesController(IUnitOfWork uow, IMapper mapper)
         {
-            _context = context;
             _uow = uow;
             _mapper = mapper;
         }
