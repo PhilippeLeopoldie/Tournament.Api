@@ -10,7 +10,7 @@ namespace Domain.Contracts;
 
 public interface IGameRepository
 {
-    Task<IEnumerable<Game>> GetAllAsync();
+    Task<IEnumerable<Game>> GetAllAsync(bool sortedByTitle);
     Task<Game> GetAsync(int id, bool trackChanges);
     Task<Game?> GetAsync(string title, bool trackChanges);
     //Task<bool> AnyAsync(int id);

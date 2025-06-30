@@ -20,9 +20,11 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
         throw new NotImplementedException();
     }*/
 
-    public async Task<IEnumerable<Game>> GetAllAsync()
+    public async Task<IEnumerable<Game>> GetAllAsync(bool sortByTitle = false)
     {
-        return await FindAll().ToListAsync() ;
+        var query = FindAll();
+        if (sortByTitle) query = query.OrderBy(game => game.Title);
+        return await query.ToListAsync();
     }
 
     public async Task<Game?> GetAsync(int id, bool trackChanges = false)
