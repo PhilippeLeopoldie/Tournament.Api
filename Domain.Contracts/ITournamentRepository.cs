@@ -11,14 +11,15 @@ namespace Domain.Contracts;
 public interface ITournamentRepository
 {
      Task<IEnumerable<TournamentDetail>> GetAllAsync(
-        bool includeGames = false,
-        bool trackChanges = false
+        bool includeGames,
+        bool sortByTitle,
+        bool trackChanges
         );
 
      Task<TournamentDetail> GetAsync(
          int id,
-         bool includeGames = false,
-         bool trackChanges= false);
+         bool includeGames,
+         bool trackChanges);
      Task<bool> AnyAsync(int id);
 
      void Create(TournamentDetail tournamentDetails);

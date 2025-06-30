@@ -18,11 +18,19 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
 
     public async Task<IEnumerable<TournamentDetail>> GetAllAsync(
         bool includeGames = false,
+        bool sortByTitle = false,
         bool trackChanges = false
         )
     {
-        return includeGames ? await FindAll(trackChanges).Include(tournament => tournament.Games).ToListAsync()
-                            : await FindAll(trackChanges).ToListAsync();
+        var query = FindAll(trackChanges);
+
+        if (includeGames)
+            query = query.Include(tournament => tournament.Games);
+
+        if (sortByTitle)
+            query = query.OrderBy(tournament => tournament.Title);
+
+        return await query.ToListAsync();
     }
 
     public async Task<TournamentDetail?> GetAsync(
