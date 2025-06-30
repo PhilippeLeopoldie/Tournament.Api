@@ -23,11 +23,11 @@ public class TournamentsController : ControllerBase
 
     // GET: api/TournamentDetails
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails(bool includeGames)
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails(bool includeGames, bool sortByTitle)
     {
         var dto = _mapper
             .Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository
-            .GetAllAsync(includeGames));
+            .GetAllAsync(includeGames, sortByTitle, trackChanges: false));
 
         return Ok(dto);
     }
@@ -36,7 +36,7 @@ public class TournamentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames)
     {
-        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, includeGames);
+        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, includeGames, trackChanges: false);
                                             
         if (tournamentDetails is null)
             return NotFound($"No tournament with id:{id} found!");
@@ -105,7 +105,8 @@ public class TournamentsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentDetails(int id)
     {
-        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, true);
+        var tournamentDetails = await _uow.TournamentRepository
+            .GetAsync(id, includeGames: true, trackChanges: false);
         if (tournamentDetails == null)
             return NotFound($"Tournament with id:{id} not found!");
 
