@@ -1,5 +1,8 @@
 ﻿using Bogus;
 using Domain.Models.Entities;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Tournament.Infrastructure.Data;
 
@@ -8,6 +11,31 @@ public static class SeedData
     private static readonly string[] tournamentsTitle = { "UEFA champions league", "BasketBall europa league", "HandBall europa league" };
     private static Queue<string> tournamentQueue = new Queue<string>(tournamentsTitle);
     private static int gameCounter;
+
+    public static async Task SeedDataAsync(this IApplicationBuilder builder)
+    {
+        using (var scope = builder.ApplicationServices.CreateScope())
+        {
+            var serviceProvider = scope.ServiceProvider;
+            var tournamentContext = serviceProvider.GetRequiredService<TournamentApiContext>();
+            await tournamentContext.Database.MigrateAsync();
+            if (await tournamentContext.TournamentDetails.AnyAsync())
+            {
+                return;
+            }
+            try
+            {
+                var tournaments = GenerateTournament();
+                tournamentContext.AddRange(tournaments);
+                await tournamentContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+    }
+
     public static List<TournamentDetail> GenerateTournament()
     {
         var faker = new Faker<TournamentDetail>().Rules((fake,Tournament) => 

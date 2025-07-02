@@ -13,7 +13,7 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IGameService> _gameService;
 
     public ITournamentService TournamentService => _tournamentService.Value;
-    public IGameService IGameService => _gameService.Value;
+    public IGameService GameService => _gameService.Value;
 
     public ServiceManager(Lazy<ITournamentService> tournamentService, Lazy<IGameService> gameService)
     {

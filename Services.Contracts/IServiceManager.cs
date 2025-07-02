@@ -9,5 +9,5 @@ namespace Services.Contracts;
 public interface IServiceManager
 {
     ITournamentService TournamentService { get; }
-    IGameService IGameService { get; }
+    IGameService GameService { get; }
 }
