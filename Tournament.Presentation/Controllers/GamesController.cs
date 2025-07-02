@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Tournaments.Shared.Dtos;
 
-namespace Tournament.Api.Controllers
+namespace Tournament.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -84,7 +84,7 @@ namespace Tournament.Api.Controllers
 
             var dto = _mapper.Map<GameUpdateDto>(gameToPatch);
 
-            patchDoc.ApplyTo(dto, ModelState);
+            //patchDoc.ApplyTo(dto, ModelState);
             TryValidateModel(dto);
             if (!ModelState.IsValid)
             {

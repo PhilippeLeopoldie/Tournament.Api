@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Tournaments.Shared.Dtos;
 
-namespace Tournament.Api.Controllers;
+namespace Tournament.Presentation.Controllers;
 
 [Route("api/Tournaments")]
 [ApiController]
@@ -80,7 +80,7 @@ public class TournamentsController : ControllerBase
             return NotFound($"No tournament with id: {tournamentId} found!");
 
         var dto = _mapper.Map<TournamentUpdateDto>(tournamentToPatch);
-        patchDocument.ApplyTo(dto, ModelState);
+        //patchDocument.ApplyTo(dto, ModelState);
         TryValidateModel(dto);
         if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 

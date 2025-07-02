@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Contracts", "Domain.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournaments.Shared", "Tournaments.Shared\Tournaments.Shared.csproj", "{7D3C7566-7046-4804-AA5A-A2FDC07ECF40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournament.Presentation", "Tournament.Presentation\Tournament.Presentation.csproj", "{5B77A546-F9F4-478E-8867-A9BCFE5DC062}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7D3C7566-7046-4804-AA5A-A2FDC07ECF40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D3C7566-7046-4804-AA5A-A2FDC07ECF40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D3C7566-7046-4804-AA5A-A2FDC07ECF40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B77A546-F9F4-478E-8867-A9BCFE5DC062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B77A546-F9F4-478E-8867-A9BCFE5DC062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B77A546-F9F4-478E-8867-A9BCFE5DC062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B77A546-F9F4-478E-8867-A9BCFE5DC062}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

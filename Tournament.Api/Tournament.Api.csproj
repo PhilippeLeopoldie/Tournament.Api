@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Domain.Contracts\Domain.Contracts.csproj" />
     <ProjectReference Include="..\Domain.Models\Domain.Models.csproj" />
     <ProjectReference Include="..\Tournament.Data\Tournament.Infrastructure.csproj" />
+    <ProjectReference Include="..\Tournament.Presentation\Tournament.Presentation.csproj" />
     <ProjectReference Include="..\Tournaments.Shared\Tournaments.Shared.csproj" />
   </ItemGroup>
 
