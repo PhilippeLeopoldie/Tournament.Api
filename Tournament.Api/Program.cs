@@ -1,10 +1,12 @@
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Contracts;
 using System.Threading.Tasks;
 using Tournament.Api.Extensions;
 using Tournament.Infrastructure.Data;
 using Tournament.Infrastructure.Repositories;
+using Tournament.Services;
 
 namespace Tournament.Api;
 
@@ -18,7 +20,8 @@ public class Program
             .GetConnectionString("TournamentApiContext") ??
             throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        builder.Services.AddScoped<IServiceManager, ServiceManager>();
+        builder.Services.AddScoped<ITournamentService, TournamentService>();
         // Add services to the container.
 
         builder.Services.AddControllers(configure => configure.ReturnHttpNotAcceptable = true)
