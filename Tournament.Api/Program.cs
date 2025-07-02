@@ -22,6 +22,10 @@ public class Program
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IServiceManager, ServiceManager>();
         builder.Services.AddScoped<ITournamentService, TournamentService>();
+        builder.Services.AddScoped<IGameService, GameService>();
+
+        builder.Services.AddLazy<ITournamentService>();
+        builder.Services.AddLazy<IGameService>();
         // Add services to the container.
 
         builder.Services.AddControllers(configure => configure.ReturnHttpNotAcceptable = true)
