@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
+using Domain.Models.Entities;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -37,5 +38,13 @@ public class TournamentService : ITournamentService
             );
     }
 
-    
+    public async Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto)
+    {
+        var updatedTournament = _mapper.Map(dto,
+            await _uow.TournamentRepository.GetAsync(id, includeGames: false, trackChanges: true)
+            );
+        await _uow.CompleteAsync();
+
+        return updatedTournament;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,4 +19,6 @@ public interface ITournamentService
         int id,
         bool includeGames,
         bool trackChanges);
+
+    Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto);
 }

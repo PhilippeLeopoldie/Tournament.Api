@@ -39,7 +39,8 @@ public class TournamentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TournamentDto>> GetTournament(int id, bool includeGames)
     {
-        var tournamentDto = await _serviceManager.TournamentService.GetTournamentAsync(id, includeGames, trackChanges: false);
+        var tournamentDto = await _serviceManager.TournamentService
+            .GetTournamentAsync(id, includeGames, trackChanges: false);
                                             
         if (tournamentDto == null)
             return NotFound($"No tournament with id:{id} found!");
@@ -54,16 +55,9 @@ public class TournamentsController : ControllerBase
     {
         if (id != dto.Id) return BadRequest();
 
-        var tournamentToUpdate = await _uow.TournamentRepository.GetAsync(
-            id,
-            includeGames:false,
-            trackChanges: true
-            );
+        var tournamentToUpdate = await _serviceManager.TournamentService.PutTournamentAsync(id , dto);
         if (tournamentToUpdate == null)
              return NotFound($"No tournament with id: {id} found!");
-        
-        _mapper.Map(dto, tournamentToUpdate);
-        await _uow.CompleteAsync();
         
         return NoContent();
     }
