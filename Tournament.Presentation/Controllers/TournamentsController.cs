@@ -78,9 +78,10 @@ public class TournamentsController : ControllerBase
         if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
         var isSaved = await _serviceManager.TournamentService.SavePatchTournamentAsync(id, tournamentPatchDto);
-        if (!isSaved) return StatusCode(500, "An error occurred while saving changes!");
 
-        return NoContent();
+        return !isSaved 
+            ? StatusCode(500, "An error occurred while saving changes!")
+            : NoContent();
     }
     
     // POST: api/TournamentDetails
