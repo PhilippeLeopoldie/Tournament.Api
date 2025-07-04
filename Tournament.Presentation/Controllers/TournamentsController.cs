@@ -88,11 +88,8 @@ public class TournamentsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromQuery]TournamentCreateDto dto)
     {
-        var tournament = _mapper.Map<TournamentDetail>(dto);
-        _uow.TournamentRepository.Create(tournament);
-        await _uow.CompleteAsync();
-        var createdTournament = _mapper.Map<TournamentDto>(tournament);
-        return CreatedAtAction("GetTournamentDetails", new { id = createdTournament.Id }, createdTournament);
+        var createdTournament = await _serviceManager.TournamentService.PostTournamentDetails(dto);
+        return CreatedAtAction("GetTournament", new { id = createdTournament.Id }, createdTournament);
     }
     
     // DELETE: api/TournamentDetails/5

@@ -72,4 +72,12 @@ public class TournamentService : ITournamentService
         await _uow.CompleteAsync();
         return true;
     }
+
+    public async Task<TournamentDto> PostTournamentDetails(TournamentCreateDto dto)
+    {
+        var tournament = _mapper.Map<TournamentDetail>(dto);
+        _uow.TournamentRepository.Create(tournament);
+        await _uow.CompleteAsync();
+        return _mapper.Map<TournamentDto>(tournament);
+    }
 }

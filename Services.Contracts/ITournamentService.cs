@@ -25,4 +25,6 @@ public interface ITournamentService
     Task<TournamentUpdateDto> TournamentToPatchAsync(int id);
 
     Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto);
+
+    Task<TournamentDto> PostTournamentDetails(TournamentCreateDto dto);
 }
