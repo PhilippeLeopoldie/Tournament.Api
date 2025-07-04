@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -46,5 +47,29 @@ public class TournamentService : ITournamentService
         await _uow.CompleteAsync();
 
         return updatedTournament;
+    }
+
+    public async Task<TournamentUpdateDto?> TournamentToPatchAsync(int id)
+    {
+        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
+            id,
+            includeGames: true, 
+            trackChanges: true
+            );
+
+        return tournamentToPatch == null? null : _mapper.Map<TournamentUpdateDto>(tournamentToPatch);
+    }
+
+    public async Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto)
+    {
+        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
+            id,
+            includeGames: true,
+            trackChanges: true
+            );
+        if (tournamentToPatch == null) return false;
+        _mapper.Map(dto, tournamentToPatch);
+        await _uow.CompleteAsync();
+        return true;
     }
 }

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
-using Microsoft.AspNetCore.JsonPatch;
+//using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Tournament.Presentation.Controllers;
 
@@ -62,26 +64,22 @@ public class TournamentsController : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("{tournamentId}")]
-    public async Task<ActionResult> PatchTournament(int tournamentId, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+    [HttpPatch("{id}")]
+    public async Task<ActionResult> PatchTournament(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
     {
         if (patchDocument == null) return BadRequest("No patchDocument");
 
-        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
-            tournamentId,
-            includeGames: true,
-            trackChanges: true
-            );
-        if (tournamentToPatch == null)
-            return NotFound($"No tournament with id: {tournamentId} found!");
+        var tournamentPatchDto = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
+        if (tournamentPatchDto == null)
+            return NotFound($"No tournament with id: {id} found!");
 
-        var dto = _mapper.Map<TournamentUpdateDto>(tournamentToPatch);
-        //patchDocument.ApplyTo(dto, ModelState);
-        TryValidateModel(dto);
+        patchDocument.ApplyTo(tournamentPatchDto, ModelState);
+        TryValidateModel(tournamentPatchDto);
         if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-        _mapper.Map(dto, tournamentToPatch);
-        await _uow.CompleteAsync();
+        var isSaved = await _serviceManager.TournamentService.SavePatchTournamentAsync(id, tournamentPatchDto);
+        if (!isSaved) return StatusCode(500, "An error occurred while saving changes!");
+
         return NoContent();
     }
     

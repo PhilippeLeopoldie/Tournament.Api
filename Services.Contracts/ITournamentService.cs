@@ -21,4 +21,8 @@ public interface ITournamentService
         bool trackChanges);
 
     Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto);
+
+    Task<TournamentUpdateDto> TournamentToPatchAsync(int id);
+
+    Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto);
 }
