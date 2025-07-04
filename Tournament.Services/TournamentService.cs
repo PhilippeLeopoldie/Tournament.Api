@@ -21,7 +21,7 @@ public class TournamentService : ITournamentService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TournamentDto>> GetTournamentsAsync(
+    public async Task<IEnumerable<TournamentDto>> GetAllTournamentsAsync(
         bool includeGames = false,
         bool sortByTitle = false,
         bool trackChanges = false)
@@ -32,7 +32,9 @@ public class TournamentService : ITournamentService
 
     public async Task<TournamentDto> GetTournamentAsync(int id, bool includeGames, bool trackChanges)
     {
-        throw new NotImplementedException();
+        return _mapper.Map<TournamentDto>(
+            await _uow.TournamentRepository.GetAsync(id, includeGames, trackChanges: false)
+            );
     }
 
     

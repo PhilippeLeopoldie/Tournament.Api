@@ -9,7 +9,7 @@ namespace Services.Contracts;
 
 public interface ITournamentService
 {
-    Task<IEnumerable<TournamentDto>> GetTournamentsAsync(
+    Task<IEnumerable<TournamentDto>> GetAllTournamentsAsync(
         bool includeGames,
         bool sortByTitle,
         bool trackChanges

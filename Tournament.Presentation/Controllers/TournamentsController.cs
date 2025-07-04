@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Presentation.Controllers;
@@ -12,37 +13,38 @@ namespace Tournament.Presentation.Controllers;
 public class TournamentsController : ControllerBase
 {
     private readonly IUnitOfWork _uow; 
-    private readonly IMapper _mapper; 
+    private readonly IMapper _mapper;
+    private readonly IServiceManager _serviceManager;
     
 
-    public TournamentsController (IUnitOfWork uow, IMapper mapper)
+    public TournamentsController (IUnitOfWork uow, IMapper mapper, IServiceManager serviceManager)
     {
         _uow = uow;
         _mapper = mapper;
+        _serviceManager = serviceManager;
     }
 
     // GET: api/TournamentDetails
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails(bool includeGames, bool sortByTitle)
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentAsync(bool includeGames, bool sortByTitle)
     {
-        var dto = _mapper
+        /*var dto = _mapper
             .Map<IEnumerable<TournamentDto>>(await _uow.TournamentRepository
-            .GetAllAsync(includeGames, sortByTitle, trackChanges: false));
-
+            .GetAllAsync(includeGames, sortByTitle, trackChanges: false));*/
+        var dto = await _serviceManager.TournamentService.GetAllTournamentsAsync(includeGames,sortByTitle, trackChanges:false);
         return Ok(dto);
     }
-
+    
     // GET: api/TournamentDetails/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames)
+    public async Task<ActionResult<TournamentDto>> GetTournament(int id, bool includeGames)
     {
-        var tournamentDetails = await _uow.TournamentRepository.GetAsync(id, includeGames, trackChanges: false);
+        var tournamentDto = await _serviceManager.TournamentService.GetTournamentAsync(id, includeGames, trackChanges: false);
                                             
-        if (tournamentDetails is null)
+        if (tournamentDto == null)
             return NotFound($"No tournament with id:{id} found!");
-
-        var dto = _mapper.Map<TournamentDto>(tournamentDetails);
-        return dto;
+        
+        return Ok(tournamentDto);
     }
     
     // PUT: api/TournamentDetails/5
@@ -114,6 +116,6 @@ public class TournamentsController : ControllerBase
         await _uow.CompleteAsync();
         return NoContent();
     }
-
+    
 
 }
