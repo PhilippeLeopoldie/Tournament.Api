@@ -94,16 +94,13 @@ public class TournamentsController : ControllerBase
     
     // DELETE: api/TournamentDetails/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTournamentDetails(int id)
+    public async Task<IActionResult> DeleteTournamentAsync(int id)
     {
-        var tournamentDetails = await _uow.TournamentRepository
-            .GetAsync(id, includeGames: true, trackChanges: false);
-        if (tournamentDetails == null)
-            return NotFound($"Tournament with id:{id} not found!");
+        var isDeleted= await _serviceManager.TournamentService.DeleteTournamentAsync(id);
 
-        _uow.TournamentRepository.Delete(tournamentDetails);
-        await _uow.CompleteAsync();
-        return NoContent();
+        return  !isDeleted 
+            ? NotFound($"Tournament with id:{id} not found!")
+            : NoContent();
     }
     
 
