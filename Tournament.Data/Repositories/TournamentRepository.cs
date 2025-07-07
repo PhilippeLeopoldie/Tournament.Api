@@ -33,7 +33,7 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
         return await query.ToListAsync();
     }
 
-    public async Task<TournamentDetail?> GetAsync(
+    public async Task<TournamentDetail?> GetByIdAsync(
          int id,
          bool includeGames = false,
          bool trackChanges = false)

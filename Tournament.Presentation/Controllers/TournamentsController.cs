@@ -38,7 +38,7 @@ public class TournamentsController : ControllerBase
     public async Task<ActionResult<TournamentDto>> GetTournament(int id, bool includeGames)
     {
         var tournamentDto = await _serviceManager.TournamentService
-            .GetTournamentAsync(id, includeGames, trackChanges: false);
+            .GetTournamentByIdAsync(id, includeGames, trackChanges: false);
                                             
         if (tournamentDto is null)
             return NotFound($"No tournament with id:{id} found!");

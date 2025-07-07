@@ -26,10 +26,10 @@ public class TournamentService : ITournamentService
             .GetAllAsync(includeGames,sortByTitle,trackChanges));
     }
 
-    public async Task<TournamentDto> GetTournamentAsync(int id, bool includeGames, bool trackChanges)
+    public async Task<TournamentDto> GetTournamentByIdAsync(int id, bool includeGames, bool trackChanges)
     {
         return _mapper.Map<TournamentDto>(
-            await _uow.TournamentRepository.GetAsync(id, includeGames, trackChanges: false)
+            await _uow.TournamentRepository.GetByIdAsync(id, includeGames, trackChanges: false)
             );
     }
 
@@ -42,7 +42,7 @@ public class TournamentService : ITournamentService
     public async Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
         var updatedTournament = _mapper.Map(dto,
-            await _uow.TournamentRepository.GetAsync(id, includeGames: false, trackChanges: true)
+            await _uow.TournamentRepository.GetByIdAsync(id, includeGames: false, trackChanges: true)
             );
         await _uow.CompleteAsync();
 
@@ -51,7 +51,7 @@ public class TournamentService : ITournamentService
 
     public async Task<TournamentUpdateDto?> TournamentToPatchAsync(int id)
     {
-        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
+        var tournamentToPatch = await _uow.TournamentRepository.GetByIdAsync(
             id,
             includeGames: true, 
             trackChanges: true
@@ -62,7 +62,7 @@ public class TournamentService : ITournamentService
 
     public async Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        var tournamentToPatch = await _uow.TournamentRepository.GetAsync(
+        var tournamentToPatch = await _uow.TournamentRepository.GetByIdAsync(
             id,
             includeGames: true,
             trackChanges: true
@@ -83,7 +83,7 @@ public class TournamentService : ITournamentService
 
     public async Task<bool> DeleteTournamentAsync(int id)
     {
-        var tournament = await _uow.TournamentRepository.GetAsync(
+        var tournament = await _uow.TournamentRepository.GetByIdAsync(
             id,
             includeGames: true,
             trackChanges: true

@@ -16,7 +16,7 @@ public interface ITournamentRepository
         bool trackChanges
         );
 
-     Task<TournamentDetail> GetAsync(
+     Task<TournamentDetail> GetByIdAsync(
          int id,
          bool includeGames,
          bool trackChanges);
