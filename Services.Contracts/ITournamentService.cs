@@ -15,13 +15,15 @@ public interface ITournamentService
         bool includeGames,
         bool trackChanges);
 
+    Task<TournamentDto> GetTournamentByTitleAsync(string title);
+
     Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto);
 
     Task<TournamentUpdateDto> TournamentToPatchAsync(int id);
 
     Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto);
 
-    Task<TournamentDto> PostTournamentDetails(TournamentCreateDto dto);
+    Task<TournamentDto> PostTournamentAsync(TournamentCreateDto dto);
 
     Task<bool> DeleteTournamentAsync(int id);
 }
