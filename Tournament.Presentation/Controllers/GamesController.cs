@@ -22,7 +22,7 @@ namespace Tournament.Presentation.Controllers
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameDto>>> GetGames(bool sortByTitle)
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesAsync(bool sortByTitle)
         {
             var dto = _mapper.Map<IEnumerable<GameDto>>( await _uow.GameRepository.GetAllAsync(sortByTitle));
 
@@ -31,7 +31,7 @@ namespace Tournament.Presentation.Controllers
 
         // GET: api/Games/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GameDto>> GetGame(int id)
+        public async Task<ActionResult<GameDto>> GetGameByIdAsync(int id)
         {
             var game = await _uow.GameRepository.GetAsync(id, trackChanges: false);
 
@@ -55,7 +55,7 @@ namespace Tournament.Presentation.Controllers
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(int id, GameUpdateDto dto)
+        public async Task<IActionResult> PutGameAsync(int id, GameUpdateDto dto)
         {
             if (id != dto.Id) return BadRequest();
 
@@ -70,7 +70,7 @@ namespace Tournament.Presentation.Controllers
         }
         
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult> PatchGame(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDoc)
+        public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDoc)
         {
             if (patchDoc == null) return BadRequest("No Patch document");
             
@@ -98,7 +98,7 @@ namespace Tournament.Presentation.Controllers
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<GameDto>> PostGame([FromQuery]GameCreateDto dto)
+        public async Task<ActionResult<GameDto>> PostGameAsync([FromQuery]GameCreateDto dto)
         {
             var game = _mapper.Map<Game>(dto);
             _uow.GameRepository.Create(game);
@@ -109,7 +109,7 @@ namespace Tournament.Presentation.Controllers
 
         // DELETE: api/Games/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGame(int id)
+        public async Task<IActionResult> DeleteGameAsync(int id)
         {
             var game = await _uow.GameRepository.GetAsync(id, trackChanges: true);
             if (game == null)
