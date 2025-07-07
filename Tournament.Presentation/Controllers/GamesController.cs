@@ -42,7 +42,7 @@ namespace Tournament.Presentation.Controllers
         }
 
         [HttpGet("title")]
-        public async Task<ActionResult<GameDto>> GetGame(string title)
+        public async Task<ActionResult<GameDto>> GetGameByTitleAsync(string title)
         {
             var game = await _uow.GameRepository.GetAsync(title, trackChanges: false);
 

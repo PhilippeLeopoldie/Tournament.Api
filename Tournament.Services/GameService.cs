@@ -21,12 +21,12 @@ public class GameService : IGameService
         _mapper = mapper;
     }
 
-    public Task<GameDto> GetGameAsync(int id, bool trackChanges)
+    public Task<GameDto> GetGameByIdAsync(int id, bool trackChanges)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<GameDto>> GetGamesAsync(bool sortedByTitle)
+    public Task<IEnumerable<GameDto>> GetGameByTitleAsync(bool sortedByTitle)
     {
         throw new NotImplementedException();
     }

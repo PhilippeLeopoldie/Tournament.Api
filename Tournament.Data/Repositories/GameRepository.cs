@@ -10,15 +10,7 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
     public GameRepository(TournamentApiContext context) : base(context)
     {
     }
-    /*void IGameRepository.Add(Game game)
-    {
-        throw new NotImplementedException();
-    }
 
-    Task<bool> IGameRepository.AnyAsync(int id)
-    {
-        throw new NotImplementedException();
-    }*/
 
     public async Task<IEnumerable<Game>> GetAllAsync(bool sortByTitle = false)
     {
@@ -39,13 +31,4 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
             .FirstOrDefaultAsync();
     }
 
-    /*void IGameRepository.Remove(Game game)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IGameRepository.Update(Game game)
-    {
-        throw new NotImplementedException();
-    }*/
 }

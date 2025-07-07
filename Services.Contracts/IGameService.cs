@@ -9,6 +9,7 @@ namespace Services.Contracts;
 
 public interface IGameService
 {
-    Task<IEnumerable<GameDto>> GetGamesAsync(bool sortedByTitle);
-    Task<GameDto> GetGameAsync(int id, bool trackChanges);
+    Task<IEnumerable<GameDto>> GetGameByTitleAsync(bool sortedByTitle);
+    Task<GameDto> GetGameByIdAsync(int id, bool trackChanges);
+
 }
