@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,12 @@ namespace Services.Contracts;
 
 public interface IGameService
 {
-    Task<IEnumerable<GameDto>> GetGameByTitleAsync(bool sortedByTitle);
+    Task<IEnumerable<GameDto>> GetAllTournamentsAsync(bool sortByTitle, bool trackChanges);
     Task<GameDto> GetGameByIdAsync(int id, bool trackChanges);
-
+    Task<GameDto> GetGameByTitleAsync(string title);
+    Task<Game> PutGameAsync(int id, GameUpdateDto dto);
+    Task<GameUpdateDto> GameToPatchAsync(int id);
+    Task<bool> SavePatchGameAsync(int id, GameUpdateDto dto);
+    Task<GameDto> PostGameAsync(GameCreateDto dto);
+    Task<bool> DeleteGameAsync(int id);
 }
