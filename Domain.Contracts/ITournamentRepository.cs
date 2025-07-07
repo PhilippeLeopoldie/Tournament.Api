@@ -25,4 +25,5 @@ public interface ITournamentRepository
      void Create(TournamentDetail tournamentDetails);
      //void Update(TournamentDetail tournamentDetails);
      void Delete(TournamentDetail tournamentDetails);
+    Task<TournamentDetail> GetByTitleAsync(string title, bool trackChanges);
 }

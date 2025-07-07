@@ -24,9 +24,17 @@ public class TournamentsController : ControllerBase
         var dto = await _serviceManager.TournamentService.GetAllTournamentsAsync(includeGames,sortByTitle, trackChanges:false);
         return Ok(dto);
     }
-    
-    // GET: api/TournamentDetails/5
-    [HttpGet("{id}")]
+
+    [HttpGet("title")]
+    public async Task<ActionResult<TournamentDto>> GetTournamentByTitleAsync(string title)
+    {
+        var dto = await _serviceManager.TournamentService.GetTournamentByTitleAsync(title);
+        if (dto is null) return NotFound($"No tournament with 'Title': {title} found!");
+        return Ok(dto);
+    }
+
+        // GET: api/TournamentDetails/5
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<TournamentDto>> GetTournament(int id, bool includeGames)
     {
         var tournamentDto = await _serviceManager.TournamentService
@@ -81,7 +89,7 @@ public class TournamentsController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var createdTournament = await _serviceManager.TournamentService.PostTournamentDetails(dto);
+        var createdTournament = await _serviceManager.TournamentService.PostTournamentAsync(dto);
         return CreatedAtAction("GetTournament", new { id = createdTournament.Id }, createdTournament);
     }
     

@@ -33,6 +33,12 @@ public class TournamentService : ITournamentService
             );
     }
 
+    public async Task<TournamentDto> GetTournamentByTitleAsync(string title)
+    {
+        var tournament = await _uow.TournamentRepository.GetByTitleAsync(title, trackChanges: false);
+        return _mapper.Map<TournamentDto>(tournament);
+    }
+
     public async Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
         var updatedTournament = _mapper.Map(dto,
@@ -67,7 +73,7 @@ public class TournamentService : ITournamentService
         return true;
     }
 
-    public async Task<TournamentDto> PostTournamentDetails(TournamentCreateDto dto)
+    public async Task<TournamentDto> PostTournamentAsync(TournamentCreateDto dto)
     {
         var tournament = _mapper.Map<TournamentDetail>(dto);
         _uow.TournamentRepository.Create(tournament);
@@ -87,4 +93,6 @@ public class TournamentService : ITournamentService
         await _uow.CompleteAsync();
         return true;
     }
+
+    
 }

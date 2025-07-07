@@ -45,4 +45,10 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
 
         return await query.FirstOrDefaultAsync();
     }
+
+    public async Task<TournamentDetail?> GetByTitleAsync(string title, bool trackChanges)
+    {
+        return await FindByCondition(Tournament => string.Equals(Tournament.Title, title), trackChanges)
+            .FirstOrDefaultAsync();
+    }
 }
