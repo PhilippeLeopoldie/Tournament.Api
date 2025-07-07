@@ -35,7 +35,7 @@ public class TournamentsController : ControllerBase
 
         // GET: api/TournamentDetails/5
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<TournamentDto>> GetTournament(int id, bool includeGames)
+    public async Task<ActionResult<TournamentDto>> GetTournamentByIdAsync(int id, bool includeGames)
     {
         var tournamentDto = await _serviceManager.TournamentService
             .GetTournamentByIdAsync(id, includeGames, trackChanges: false);
@@ -49,7 +49,7 @@ public class TournamentsController : ControllerBase
     // PUT: api/TournamentDetails/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTournamentDetails(int id, TournamentUpdateDto dto)
+    public async Task<IActionResult> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest($"id: '{id}' do not match id '{dto.Id}' from body");
 
@@ -63,7 +63,7 @@ public class TournamentsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult> PatchTournament(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+    public async Task<ActionResult> PatchTournamentAsync(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
     {
         if (patchDocument is null) return BadRequest("No patchDocument");
 
@@ -90,7 +90,7 @@ public class TournamentsController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var createdTournament = await _serviceManager.TournamentService.PostTournamentAsync(dto);
-        return CreatedAtAction("GetTournament", new { id = createdTournament.Id }, createdTournament);
+        return CreatedAtAction("GetTournamentByIdAsync", new { id = createdTournament.Id }, createdTournament);
     }
     
     // DELETE: api/TournamentDetails/5
