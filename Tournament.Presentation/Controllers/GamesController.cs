@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Domain.Contracts;
-using Domain.Models.Entities;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
@@ -12,14 +9,10 @@ namespace Tournament.Presentation.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IMapper _mapper;
         private readonly IServiceManager _serviceManager;
 
-        public GamesController(IUnitOfWork uow, IMapper mapper, IServiceManager serviceManager)
+        public GamesController(IServiceManager serviceManager)
         {
-            _uow = uow;
-            _mapper = mapper;
             _serviceManager = serviceManager;
         }
 
@@ -35,23 +28,21 @@ namespace Tournament.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDto>> GetGameByIdAsync(int id)
         {
-            var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: false);
+            var gameDto = await _serviceManager.GameService
+            .GetGameByIdAsync(id, trackChanges: false);
 
-            if (game == null) 
-                return NotFound($"No game with id: '{id}' found!");
-            var dto = _mapper.Map<GameDto>(game);
-            return dto;
+            if (gameDto is null)
+                return NotFound($"No game with id:{id} found!");
+
+            return Ok(gameDto);
         }
 
         [HttpGet("title")]
         public async Task<ActionResult<GameDto>> GetGameByTitleAsync(string title)
         {
-            var game = await _uow.GameRepository.GetByTitleAsync(title, trackChanges: false);
-
-            if (game == null)
-                return NotFound($"No game with title: '{title}' found!");
-            var dto = _mapper.Map<GameDto>(game);
-            return dto;
+            var dto = await _serviceManager.GameService.GetGameByTitleAsync(title);
+            if (dto is null) return NotFound($"No game with 'Title': {title} found!");
+            return Ok(dto);
         }
 
         // PUT: api/Games/5
@@ -59,42 +50,35 @@ namespace Tournament.Presentation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGameAsync(int id, GameUpdateDto dto)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != dto.Id) return BadRequest($"id: '{id}' do not match id '{dto.Id}' from body");
 
-            var GameToUpdate = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
-            if (GameToUpdate == null)
-                return NotFound($"No game with id: '{id}' found!");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            _mapper.Map(dto, GameToUpdate);
-            await _uow.CompleteAsync();
+            var gameToUpdate = await _serviceManager.GameService.PutGameAsync(id, dto);
 
-            return NoContent();
+            return gameToUpdate is null
+                ? NotFound($"No tournament with id: {id} found!")
+                : NoContent();
         }
         
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDoc)
+        public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDocument)
         {
-            if (patchDoc == null) return BadRequest("No Patch document");
-            
-            var gameToPatch = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
+            if (patchDocument is null) return BadRequest("No patchDocument");
 
-            if (gameToPatch == null) 
+            var gamePatchDto = await _serviceManager.GameService.GameToPatchAsync(id);
+            if (gamePatchDto is null)
                 return NotFound($"No game with id: {id} found!");
 
-            if (!gameToPatch.TournamentDetailId.Equals(tournamentId))
-                return NotFound($"Game with ID {id} is not associated with Tournament ID {tournamentId}.");
+            patchDocument.ApplyTo(gamePatchDto, ModelState);
+            TryValidateModel(gamePatchDto);
+            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var dto = _mapper.Map<GameUpdateDto>(gameToPatch);
+            var isSaved = await _serviceManager.GameService.SavePatchGameAsync(id, gamePatchDto);
 
-            //patchDoc.ApplyTo(dto, ModelState);
-            TryValidateModel(dto);
-            if (!ModelState.IsValid)
-            {
-                return UnprocessableEntity(ModelState);
-            }
-            _mapper.Map(dto, gameToPatch);
-            await _uow.CompleteAsync();
-            return NoContent();
+            return !isSaved
+                ? StatusCode(500, "An error occurred while saving changes!")
+                : NoContent();
         }
 
         // POST: api/Games
@@ -102,24 +86,21 @@ namespace Tournament.Presentation.Controllers
         [HttpPost]
         public async Task<ActionResult<GameDto>> PostGameAsync([FromQuery]GameCreateDto dto)
         {
-            var game = _mapper.Map<Game>(dto);
-            _uow.GameRepository.Create(game);
-            await _uow.CompleteAsync();
-            var createdGame = _mapper.Map<GameDto>(game);
-            return CreatedAtAction("GetGame", new { id = createdGame.Id }, createdGame);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var createdGame = await _serviceManager.GameService.PostGameAsync(dto);
+            return CreatedAtAction("GetGameByIdAsync", new { id = createdGame.Id }, createdGame);
         }
 
         // DELETE: api/Games/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGameAsync(int id)
         {
-            var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
-            if (game == null)
-                return NotFound($"Game with id:{id} not found!");
+            var isDeleted = await _serviceManager.GameService.DeleteGameAsync(id);
 
-            _uow.GameRepository.Delete(game);
-            await _uow.CompleteAsync();
-            return NoContent();
+            return !isDeleted
+                ? NotFound($"Game with id:{id} not found!")
+                : NoContent();
         }
     }
 }
