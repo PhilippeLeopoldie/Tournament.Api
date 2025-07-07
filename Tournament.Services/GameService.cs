@@ -50,14 +50,20 @@ public class GameService : IGameService
         return updatedGame;
     }
 
-    public async Task<GameUpdateDto> GameToPatchAsync(int id)
+    public async Task<GameUpdateDto?> GameToPatchAsync(int id)
     {
-        throw new NotImplementedException();
+        var gameToPatch = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
+
+        return gameToPatch is null ? null : _mapper.Map<GameUpdateDto>(gameToPatch);
     }
 
     public async Task<bool> SavePatchGameAsync(int id, GameUpdateDto dto)
     {
-        throw new NotImplementedException();
+        var gameToPatch = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
+        if (gameToPatch is null) return false;
+        _mapper.Map(dto, gameToPatch);
+        await _uow.CompleteAsync();
+        return true;
     }
 
     public async Task<GameDto> PostGameAsync(GameCreateDto dto)
