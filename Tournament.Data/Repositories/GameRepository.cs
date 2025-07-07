@@ -12,20 +12,20 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
     }
 
 
-    public async Task<IEnumerable<Game>> GetAllAsync(bool sortByTitle = false)
+    public async Task<IEnumerable<Game>> GetAllAsync(bool sortByTitle = false, bool trackChanges = false)
     {
-        var query = FindAll();
+        var query = FindAll(trackChanges);
         if (sortByTitle) query = query.OrderBy(game => game.Title);
         return await query.ToListAsync();
     }
 
-    public async Task<Game?> GetAsync(int id, bool trackChanges = false)
+    public async Task<Game?> GetByIdAsync(int id, bool trackChanges = false)
     {
        return await FindByCondition(game => game.Id.Equals(id), trackChanges)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Game?> GetAsync(string title, bool trackChanges = false)
+    public async Task<Game?> GetByTitleAsync(string title, bool trackChanges = false)
     {
         return await FindByCondition(game => game.Title.ToLower() == title.ToLower() , trackChanges)
             .FirstOrDefaultAsync();
