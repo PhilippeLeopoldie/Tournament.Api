@@ -22,7 +22,7 @@ public class GameService : IGameService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<GameDto>> GetAllTournamentsAsync(bool sortByTitle, bool trackChanges = false)
+    public async Task<IEnumerable<GameDto>> GetAllGamesAsync(bool sortByTitle, bool trackChanges = false)
     {
         return _mapper.Map<IEnumerable<GameDto>>(await _uow.GameRepository.GetAllAsync(sortByTitle, trackChanges));
     }

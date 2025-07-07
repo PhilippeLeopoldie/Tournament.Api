@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Presentation.Controllers
@@ -13,19 +14,20 @@ namespace Tournament.Presentation.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly IServiceManager _serviceManager;
 
-        public GamesController(IUnitOfWork uow, IMapper mapper)
+        public GamesController(IUnitOfWork uow, IMapper mapper, IServiceManager serviceManager)
         {
             _uow = uow;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         // GET: api/Games
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesAsync(bool sortByTitle)
         {
-            var dto = _mapper.Map<IEnumerable<GameDto>>( await _uow.GameRepository.GetAllAsync(sortByTitle));
-
+            var dto = await _serviceManager.GameService.GetAllGamesAsync(sortByTitle, trackChanges: false);
             return Ok(dto);
         }
 
@@ -33,7 +35,7 @@ namespace Tournament.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDto>> GetGameByIdAsync(int id)
         {
-            var game = await _uow.GameRepository.GetAsync(id, trackChanges: false);
+            var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: false);
 
             if (game == null) 
                 return NotFound($"No game with id: '{id}' found!");
@@ -44,7 +46,7 @@ namespace Tournament.Presentation.Controllers
         [HttpGet("title")]
         public async Task<ActionResult<GameDto>> GetGameByTitleAsync(string title)
         {
-            var game = await _uow.GameRepository.GetAsync(title, trackChanges: false);
+            var game = await _uow.GameRepository.GetByTitleAsync(title, trackChanges: false);
 
             if (game == null)
                 return NotFound($"No game with title: '{title}' found!");
@@ -59,7 +61,7 @@ namespace Tournament.Presentation.Controllers
         {
             if (id != dto.Id) return BadRequest();
 
-            var GameToUpdate = await _uow.GameRepository.GetAsync(id, trackChanges: true);
+            var GameToUpdate = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
             if (GameToUpdate == null)
                 return NotFound($"No game with id: '{id}' found!");
 
@@ -74,7 +76,7 @@ namespace Tournament.Presentation.Controllers
         {
             if (patchDoc == null) return BadRequest("No Patch document");
             
-            var gameToPatch = await _uow.GameRepository.GetAsync(id, trackChanges: true);
+            var gameToPatch = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
 
             if (gameToPatch == null) 
                 return NotFound($"No game with id: {id} found!");
@@ -111,7 +113,7 @@ namespace Tournament.Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGameAsync(int id)
         {
-            var game = await _uow.GameRepository.GetAsync(id, trackChanges: true);
+            var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
             if (game == null)
                 return NotFound($"Game with id:{id} not found!");
 
