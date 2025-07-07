@@ -68,13 +68,18 @@ public class GameService : IGameService
 
     public async Task<GameDto> PostGameAsync(GameCreateDto dto)
     {
-        throw new NotImplementedException();
+        var game = _mapper.Map<Game>(dto);
+        _uow.GameRepository.Create(game);
+        await _uow.CompleteAsync();
+        return _mapper.Map<GameDto>(game);
     }
 
     public async Task<bool> DeleteGameAsync(int id)
     {
-        throw new NotImplementedException();
+        var tournament = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
+        if (tournament is null) return false;
+        _uow.GameRepository.Delete(tournament);
+        await _uow.CompleteAsync();
+        return true;
     }
-
-
 }
