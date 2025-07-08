@@ -2,6 +2,7 @@
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Infrastructure.Data;
+using Tournaments.Shared.Request;
 
 namespace Tournament.Infrastructure.Repositories;
 
@@ -16,21 +17,21 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
         return await AnyAsync(id);
     }
 
-    public async Task<IEnumerable<TournamentDetail>> GetAllAsync(
-        bool includeGames = false,
+    public async Task<PagedList<TournamentDetail>> GetAllAsync(
+        TournamentRequestParams requestParams,
         bool sortByTitle = false,
         bool trackChanges = false
         )
     {
         var query = FindAll(trackChanges);
 
-        if (includeGames)
+        if (requestParams.IncludeGames)
             query = query.Include(tournament => tournament.Games);
 
         if (sortByTitle)
             query = query.OrderBy(tournament => tournament.Title);
 
-        return await query.ToListAsync();
+        return await PagedList<TournamentDetail>.CreateAsync( query,requestParams.PageNumber, requestParams.PageSize);
     }
 
     public async Task<TournamentDetail?> GetByIdAsync(

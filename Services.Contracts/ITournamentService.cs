@@ -1,12 +1,13 @@
 ﻿using Domain.Models.Entities;
 using Tournaments.Shared.Dtos;
+using Tournaments.Shared.Request;
 
 namespace Services.Contracts;
 
 public interface ITournamentService
 {
-    Task<IEnumerable<TournamentDto>> GetAllTournamentsAsync(
-        bool includeGames,
+    Task<(IEnumerable<TournamentDto> tournamentsDto, MetaData metaData)> GetAllTournamentsAsync(
+        TournamentRequestParams requestParams,
         bool sortByTitle,
         bool trackChanges
         );

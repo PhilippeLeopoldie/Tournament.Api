@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Models.Entities;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
+using Tournaments.Shared.Request;
 
 namespace Tournament.Services;
 
@@ -17,13 +18,14 @@ public class TournamentService : ITournamentService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TournamentDto>> GetAllTournamentsAsync(
-        bool includeGames = false,
+    public async Task<(IEnumerable<TournamentDto> tournamentsDto, MetaData metaData)> GetAllTournamentsAsync(
+        TournamentRequestParams requestParams,
         bool sortByTitle = false,
         bool trackChanges = false)
     {
-        return _mapper.Map<IEnumerable<TournamentDto>>( await _uow.TournamentRepository
-            .GetAllAsync(includeGames,sortByTitle,trackChanges));
+        var pagedList = await _uow.TournamentRepository.GetAllAsync(requestParams, sortByTitle, trackChanges);
+        var tournamentsDto = _mapper.Map<IEnumerable<TournamentDto>>(pagedList.Items);
+        return (tournamentsDto, pagedList.MetaData);
     }
 
     public async Task<TournamentDto> GetTournamentByIdAsync(int id, bool includeGames, bool trackChanges)

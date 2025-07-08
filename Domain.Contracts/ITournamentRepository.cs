@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tournaments.Shared.Request;
 //using Tournament.Core.Entities;
 
 namespace Domain.Contracts;
 
 public interface ITournamentRepository
 {
-     Task<IEnumerable<TournamentDetail>> GetAllAsync(
-        bool includeGames,
+     Task<PagedList<TournamentDetail>> GetAllAsync(
+        TournamentRequestParams requestParams,
         bool sortByTitle,
         bool trackChanges
         );

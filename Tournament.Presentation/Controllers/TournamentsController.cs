@@ -2,6 +2,9 @@
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
+using Tournaments.Shared.Request;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Tournament.Presentation.Controllers;
 
@@ -19,10 +22,11 @@ public class TournamentsController : ControllerBase
 
     // GET: api/TournamentDetails
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentAsync(bool includeGames, bool sortByTitle)
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentAsync([FromQuery]TournamentRequestParams requestParams, bool sortByTitle)
     {
-        var dto = await _serviceManager.TournamentService.GetAllTournamentsAsync(includeGames,sortByTitle, trackChanges:false);
-        return Ok(dto);
+        var pagedResult = await _serviceManager.TournamentService.GetAllTournamentsAsync(requestParams,sortByTitle, trackChanges:false);
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        return Ok(pagedResult.tournamentsDto);
     }
 
     [HttpGet("title")]
