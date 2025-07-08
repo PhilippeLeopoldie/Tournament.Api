@@ -41,11 +41,11 @@ public class TournamentService : ITournamentService
 
     public async Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        var updatedTournament = _mapper.Map(dto,
-            await _uow.TournamentRepository.GetByIdAsync(id, includeGames: false, trackChanges: true)
-            );
-        await _uow.CompleteAsync();
+        var tournament = await _uow.TournamentRepository.GetByIdAsync(id, includeGames: false, trackChanges: true);
+        if (tournament is null) return tournament;
 
+        var updatedTournament = _mapper.Map(dto, tournament);
+        await _uow.CompleteAsync();
         return updatedTournament;
     }
 
