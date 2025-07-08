@@ -2,11 +2,6 @@
 using Domain.Contracts;
 using Domain.Models.Entities;
 using Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tournaments.Shared.Dtos;
 
 namespace Tournament.Services;
@@ -42,11 +37,11 @@ public class GameService : IGameService
 
     public async Task<Game> PutGameAsync(int id, GameUpdateDto dto)
     {
-        var updatedGame = _mapper.Map(dto,
-            await _uow.GameRepository.GetByIdAsync(id, trackChanges: true)
-            );
-        await _uow.CompleteAsync();
+        var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
+        if (game is null) return game;
 
+        var updatedGame = _mapper.Map(dto,game);
+        await _uow.CompleteAsync();
         return updatedGame;
     }
 

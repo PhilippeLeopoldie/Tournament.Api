@@ -57,7 +57,7 @@ namespace Tournament.Presentation.Controllers
             var gameToUpdate = await _serviceManager.GameService.PutGameAsync(id, dto);
 
             return gameToUpdate is null
-                ? NotFound($"No tournament with id: {id} found!")
+                ? NotFound($"No game with id: {id} found!")
                 : NoContent();
         }
         
