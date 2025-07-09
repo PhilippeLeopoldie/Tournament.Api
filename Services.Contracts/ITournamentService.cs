@@ -26,5 +26,5 @@ public interface ITournamentService
 
     Task<TournamentDto> PostTournamentAsync(TournamentCreateDto dto);
 
-    Task<bool> DeleteTournamentAsync(int id);
+    Task DeleteTournamentAsync(int id);
 }

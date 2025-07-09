@@ -85,11 +85,8 @@ public class TournamentsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentAsync(int id)
     {
-        var isDeleted= await _serviceManager.TournamentService.DeleteTournamentAsync(id);
-
-        return  !isDeleted 
-            ? NotFound($"Tournament with id:{id} not found!")
-            : NoContent();
+        await _serviceManager.TournamentService.DeleteTournamentAsync(id);
+        return NoContent();
     }
     
 

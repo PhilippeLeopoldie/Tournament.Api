@@ -71,17 +71,11 @@ public class TournamentService : ITournamentService
         return _mapper.Map<TournamentDto>(tournament);
     }
 
-    public async Task<bool> DeleteTournamentAsync(int id)
+    public async Task DeleteTournamentAsync(int id)
     {
-        var tournament = await _uow.TournamentRepository.GetByIdAsync(
-            id,
-            includeGames: true,
-            trackChanges: true
-            );
-        if (tournament is null) return false;
+        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames: true, trackChanges: true);
         _uow.TournamentRepository.Delete(tournament);
         await _uow.CompleteAsync();
-        return true;
     }
 
     private async Task<TournamentDetail> GetTournamentByIdOrThrowExceptionAsync(int id, bool includeGames, bool trackChanges)
