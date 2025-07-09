@@ -39,9 +39,9 @@ public class TournamentsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentByIdAsync(int id, bool includeGames)
     {
-        var tournamentDto = await _serviceManager.TournamentService
-            .GetTournamentByIdAsync(id, includeGames, trackChanges: false);
-        return Ok(tournamentDto);
+        return Ok(await _serviceManager.TournamentService
+            .GetTournamentByIdAsync(id, includeGames, trackChanges: false)
+            );
     }
     
     // PUT: api/TournamentDetails/5
