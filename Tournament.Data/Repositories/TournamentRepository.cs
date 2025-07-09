@@ -31,7 +31,7 @@ public class TournamentRepository : RepositoryBase<TournamentDetail> ,ITournamen
         if (sortByTitle)
             query = query.OrderBy(tournament => tournament.Title);
 
-        return await PagedList<TournamentDetail>.CreateAsync( query,requestParams.PageNumber, requestParams.PageSize);
+        return await PagedList<TournamentDetail>.CreateAsync( query,requestParams.Page, requestParams.PageSize);
     }
 
     public async Task<TournamentDetail?> GetByIdAsync(

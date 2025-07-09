@@ -20,7 +20,7 @@ public class PagedList<T>
                 currentPage: pageNumber,
                 totalPages: (int)Math.Ceiling(count / (double)pageSize),
                 pageSize: pageSize,
-                totalCount: count
+                totalItems: count
                 );
         Items = new List<T>(items).AsReadOnly();
     }
