@@ -43,10 +43,6 @@ public class TournamentsController : ControllerBase
     {
         var tournamentDto = await _serviceManager.TournamentService
             .GetTournamentByIdAsync(id, includeGames, trackChanges: false);
-                                            
-        if (tournamentDto is null)
-            return NotFound($"No tournament with id:{id} found!");
-        
         return Ok(tournamentDto);
     }
     
