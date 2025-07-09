@@ -44,24 +44,23 @@ public class TournamentService : ITournamentService
 
     public async Task PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
+        if (id != dto.Id) throw new GlobalBadRequestException(id);
         var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames:false, trackChanges: true);
         _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
     }
 
-    public async Task<TournamentUpdateDto?> TournamentToPatchAsync(int id)
+    public async Task<(TournamentDetail,TournamentUpdateDto)> TournamentToPatchAsync(int id)
     {
         var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames: true, trackChanges: true);
-        return _mapper.Map<TournamentUpdateDto>(tournament);
+        var dto = _mapper.Map<TournamentUpdateDto>(tournament);
+        return (tournament,dto);
     }
 
-    public async Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto)
+    public async Task SavePatchTournamentAsync(TournamentDetail tournament ,TournamentUpdateDto dto)
     {
-        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames: true, trackChanges: true);
-        if (tournament is null) return false;
         _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
-        return true;
     }
 
     public async Task<TournamentDto> PostTournamentAsync(TournamentCreateDto dto)

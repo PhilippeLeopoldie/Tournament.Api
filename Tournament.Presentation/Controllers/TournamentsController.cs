@@ -50,10 +50,7 @@ public class TournamentsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        if (id != dto.Id) throw new GlobalBadRequestException(id);
-
         if (!ModelState.IsValid) return BadRequest(ModelState);
-
         await _serviceManager.TournamentService.PutTournamentAsync(id , dto);
         return NoContent();
     }
@@ -63,19 +60,14 @@ public class TournamentsController : ControllerBase
     {
         if (patchDocument is null) throw new GlobalBadRequestException();
 
-        var tournamentPatchDto = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
-        if (tournamentPatchDto is null)
-            return NotFound($"No tournament with id: {id} found!");
+        var (tournament,tournamentPatchDto) = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
 
         patchDocument.ApplyTo(tournamentPatchDto, ModelState);
         TryValidateModel(tournamentPatchDto);
         if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-        var isSaved = await _serviceManager.TournamentService.SavePatchTournamentAsync(id, tournamentPatchDto);
-
-        return !isSaved 
-            ? StatusCode(500, "An error occurred while saving changes!")
-            : NoContent();
+        await _serviceManager.TournamentService.SavePatchTournamentAsync(tournament ,tournamentPatchDto);
+        return NoContent();
     }
     
     // POST: api/TournamentDetails
