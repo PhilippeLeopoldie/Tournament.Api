@@ -32,9 +32,7 @@ public class TournamentsController : ControllerBase
     [HttpGet("title")]
     public async Task<ActionResult<TournamentDto>> GetTournamentByTitleAsync(string title)
     {
-        var dto = await _serviceManager.TournamentService.GetTournamentByTitleAsync(title);
-        if (dto is null) return NotFound($"No tournament with 'Title': {title} found!");
-        return Ok(dto);
+        return Ok(await _serviceManager.TournamentService.GetTournamentByTitleAsync(title));
     }
 
         // GET: api/TournamentDetails/5

@@ -39,6 +39,7 @@ public class TournamentService : ITournamentService
     public async Task<TournamentDto> GetTournamentByTitleAsync(string title)
     {
         var tournament = await _uow.TournamentRepository.GetByTitleAsync(title, trackChanges: false);
+        if (tournament is null) throw new TournamentNotFoundException(title);
         return _mapper.Map<TournamentDto>(tournament);
     }
 
