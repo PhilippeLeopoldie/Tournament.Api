@@ -10,12 +10,12 @@ public abstract class BadRequestException : Exception
     }
 }
 
-public class GlobalBadRequest : BadRequestException
+public class GlobalBadRequestException : BadRequestException
 {
-    public GlobalBadRequest(int id) : base($"id: '{id}' do not match id from body")
+    public GlobalBadRequestException(int id) : base($"id: '{id}' do not match id from body")
     {
     }
-    public GlobalBadRequest() : base($"No patchDocument")
+    public GlobalBadRequestException() : base($"No patchDocument")
     {
     }
 }
