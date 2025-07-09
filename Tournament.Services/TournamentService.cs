@@ -31,8 +31,7 @@ public class TournamentService : ITournamentService
 
     public async Task<TournamentDto> GetTournamentByIdAsync(int id, bool includeGames, bool trackChanges)
     {
-        var tournament = await _uow.TournamentRepository.GetByIdAsync(id, includeGames, trackChanges: false);
-        if (tournament is null) throw new TournamentNotFoundException(id);
+        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames, trackChanges:false);
         return _mapper.Map<TournamentDto>(tournament);
     }
 
@@ -45,33 +44,22 @@ public class TournamentService : ITournamentService
 
     public async Task PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        var tournament = await _uow.TournamentRepository.GetByIdAsync(id, includeGames: false, trackChanges: true);
-        if (tournament is null) throw new TournamentNotFoundException(id);
-
+        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames:false, trackChanges: true);
         _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
     }
 
     public async Task<TournamentUpdateDto?> TournamentToPatchAsync(int id)
     {
-        var tournamentToPatch = await _uow.TournamentRepository.GetByIdAsync(
-            id,
-            includeGames: true, 
-            trackChanges: true
-            );
-
-        return tournamentToPatch is null? null : _mapper.Map<TournamentUpdateDto>(tournamentToPatch);
+        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames: true, trackChanges: true);
+        return _mapper.Map<TournamentUpdateDto>(tournament);
     }
 
     public async Task<bool> SavePatchTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        var tournamentToPatch = await _uow.TournamentRepository.GetByIdAsync(
-            id,
-            includeGames: true,
-            trackChanges: true
-            );
-        if (tournamentToPatch is null) return false;
-        _mapper.Map(dto, tournamentToPatch);
+        var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames: true, trackChanges: true);
+        if (tournament is null) return false;
+        _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
         return true;
     }
@@ -97,5 +85,11 @@ public class TournamentService : ITournamentService
         return true;
     }
 
+    private async Task<TournamentDetail> GetTournamentByIdOrThrowExceptionAsync(int id, bool includeGames, bool trackChanges)
+    {
+        var tournament = await _uow.TournamentRepository.GetByIdAsync(id, includeGames, trackChanges);
+        if (tournament is null) throw new TournamentNotFoundException(id);
+        return tournament;
+    }
     
 }
