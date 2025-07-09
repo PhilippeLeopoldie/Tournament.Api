@@ -37,7 +37,9 @@ public class Program
         builder.Services.AddAutoMapper(typeof(TournamentMappings));
 
         var app = builder.Build();
-        
+
+        app.ConfigureExceptionHandler();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
