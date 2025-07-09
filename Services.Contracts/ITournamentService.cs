@@ -18,7 +18,7 @@ public interface ITournamentService
 
     Task<TournamentDto> GetTournamentByTitleAsync(string title);
 
-    Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto);
+    Task PutTournamentAsync(int id, TournamentUpdateDto dto);
 
     Task<TournamentUpdateDto> TournamentToPatchAsync(int id);
 

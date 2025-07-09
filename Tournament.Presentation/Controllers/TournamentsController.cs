@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Tournaments.Shared.Request;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Domain.Models.Exceptions;
 
 namespace Tournament.Presentation.Controllers;
 
@@ -49,15 +50,12 @@ public class TournamentsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        if (id != dto.Id) return BadRequest($"id: '{id}' do not match id '{dto.Id}' from body");
+        if (id != dto.Id) throw new GlobalBadRequestException(id);
 
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var tournamentToUpdate = await _serviceManager.TournamentService.PutTournamentAsync(id , dto);
-        
-        return tournamentToUpdate is null
-            ? NotFound($"No tournament with id: {id} found!")
-            : NoContent();
+        await _serviceManager.TournamentService.PutTournamentAsync(id , dto);
+        return NoContent();
     }
 
     [HttpPatch("{id}")]

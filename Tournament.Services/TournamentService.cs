@@ -43,14 +43,13 @@ public class TournamentService : ITournamentService
         return _mapper.Map<TournamentDto>(tournament);
     }
 
-    public async Task<TournamentDetail> PutTournamentAsync(int id, TournamentUpdateDto dto)
+    public async Task PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
         var tournament = await _uow.TournamentRepository.GetByIdAsync(id, includeGames: false, trackChanges: true);
-        if (tournament is null) return tournament;
+        if (tournament is null) throw new TournamentNotFoundException(id);
 
-        var updatedTournament = _mapper.Map(dto, tournament);
+        _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
-        return updatedTournament;
     }
 
     public async Task<TournamentUpdateDto?> TournamentToPatchAsync(int id)
