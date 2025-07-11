@@ -44,15 +44,9 @@ namespace Tournament.Presentation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGameAsync(int id, GameUpdateDto dto)
         {
-            if (id != dto.Id) return BadRequest($"id: '{id}' do not match id '{dto.Id}' from body");
-
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var gameToUpdate = await _serviceManager.GameService.PutGameAsync(id, dto);
-
-            return gameToUpdate is null
-                ? NotFound($"No game with id: {id} found!")
-                : NoContent();
+            await _serviceManager.GameService.PutGameAsync(id, dto);
+            return NoContent();
         }
         
         [HttpPatch("{id:int}")]

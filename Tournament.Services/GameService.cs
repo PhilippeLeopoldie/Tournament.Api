@@ -36,14 +36,12 @@ public class GameService : IGameService
         return _mapper.Map<GameDto>(game);
     }
 
-    public async Task<Game> PutGameAsync(int id, GameUpdateDto dto)
+    public async Task PutGameAsync(int id, GameUpdateDto dto)
     {
-        var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges: true);
-        if (game is null) return game;
-
+        if (id != dto.Id) throw new GlobalBadRequestException(id);
+        var game = await GetGameByIdOrThrowExceptionAsync(id, trackChanges: true);
         var updatedGame = _mapper.Map(dto,game);
         await _uow.CompleteAsync();
-        return updatedGame;
     }
 
     public async Task<GameUpdateDto?> GameToPatchAsync(int id)

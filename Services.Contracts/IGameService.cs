@@ -13,7 +13,7 @@ public interface IGameService
     Task<IEnumerable<GameDto>> GetAllGamesAsync(bool sortByTitle, bool trackChanges);
     Task<GameDto> GetGameByIdAsync(int id, bool trackChanges);
     Task<GameDto> GetGameByTitleAsync(string title);
-    Task<Game> PutGameAsync(int id, GameUpdateDto dto);
+    Task PutGameAsync(int id, GameUpdateDto dto);
     Task<GameUpdateDto> GameToPatchAsync(int id);
     Task<bool> SavePatchGameAsync(int id, GameUpdateDto dto);
     Task<GameDto> PostGameAsync(GameCreateDto dto);
