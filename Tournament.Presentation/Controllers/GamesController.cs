@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Domain.Models.Exceptions;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
@@ -52,21 +53,16 @@ namespace Tournament.Presentation.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDocument)
         {
-            if (patchDocument is null) return BadRequest("No patchDocument");
+            if (patchDocument is null) throw new InvalidIdBadRequestException();
 
-            var gamePatchDto = await _serviceManager.GameService.GameToPatchAsync(id);
-            if (gamePatchDto is null)
-                return NotFound($"No game with id: {id} found!");
+            var (game,gamePatchDto) = await _serviceManager.GameService.GameToPatchAsync(gameId:id,tournamentId);
 
             patchDocument.ApplyTo(gamePatchDto, ModelState);
             TryValidateModel(gamePatchDto);
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var isSaved = await _serviceManager.GameService.SavePatchGameAsync(id, gamePatchDto);
-
-            return !isSaved
-                ? StatusCode(500, "An error occurred while saving changes!")
-                : NoContent();
+            await _serviceManager.GameService.SavePatchGameAsync(game, gamePatchDto);
+            return NoContent();
         }
 
         // POST: api/Games

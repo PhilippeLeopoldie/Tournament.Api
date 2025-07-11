@@ -14,8 +14,8 @@ public interface IGameService
     Task<GameDto> GetGameByIdAsync(int id, bool trackChanges);
     Task<GameDto> GetGameByTitleAsync(string title);
     Task PutGameAsync(int id, GameUpdateDto dto);
-    Task<GameUpdateDto> GameToPatchAsync(int id);
-    Task<bool> SavePatchGameAsync(int id, GameUpdateDto dto);
+    Task<(Game, GameUpdateDto)> GameToPatchAsync(int gameId, int tounamentId);
+    Task SavePatchGameAsync(Game game, GameUpdateDto dto);
     Task<GameDto> PostGameAsync(GameCreateDto dto);
     Task<bool> DeleteGameAsync(int id);
 }

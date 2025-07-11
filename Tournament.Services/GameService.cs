@@ -38,26 +38,24 @@ public class GameService : IGameService
 
     public async Task PutGameAsync(int id, GameUpdateDto dto)
     {
-        if (id != dto.Id) throw new GlobalBadRequestException(id);
+        if (id != dto.Id) throw new InvalidIdBadRequestException(id);
         var game = await GetGameByIdOrThrowExceptionAsync(id, trackChanges: true);
         var updatedGame = _mapper.Map(dto,game);
         await _uow.CompleteAsync();
     }
 
-    public async Task<GameUpdateDto?> GameToPatchAsync(int id)
+    public async Task<(Game,GameUpdateDto)> GameToPatchAsync(int gameId, int tournamentId)
     {
-        var gameToPatch = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
-
-        return gameToPatch is null ? null : _mapper.Map<GameUpdateDto>(gameToPatch);
+        if(gameId != tournamentId) throw new InvalidIdBadRequestException(gameId);
+        var game = await GetGameByIdOrThrowExceptionAsync(gameId, trackChanges: true);
+        var dto = _mapper.Map<GameUpdateDto>(game);
+        return (game,dto);
     }
 
-    public async Task<bool> SavePatchGameAsync(int id, GameUpdateDto dto)
+    public async Task SavePatchGameAsync(Game game, GameUpdateDto dto)
     {
-        var gameToPatch = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
-        if (gameToPatch is null) return false;
-        _mapper.Map(dto, gameToPatch);
+        _mapper.Map(dto, game);
         await _uow.CompleteAsync();
-        return true;
     }
 
     public async Task<GameDto> PostGameAsync(GameCreateDto dto)
