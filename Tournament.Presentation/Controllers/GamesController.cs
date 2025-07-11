@@ -28,12 +28,7 @@ namespace Tournament.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDto>> GetGameByIdAsync(int id)
         {
-            var gameDto = await _serviceManager.GameService
-            .GetGameByIdAsync(id, trackChanges: false);
-
-            if (gameDto is null)
-                return NotFound($"No game with id:{id} found!");
-
+            var gameDto = await _serviceManager.GameService.GetGameByIdAsync(id, trackChanges: false);
             return Ok(gameDto);
         }
 

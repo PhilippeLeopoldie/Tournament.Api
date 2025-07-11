@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
 
@@ -24,9 +25,8 @@ public class GameService : IGameService
 
     public async Task<GameDto> GetGameByIdAsync(int id, bool trackChanges)
     {
-        return _mapper.Map<GameDto>(
-            await _uow.GameRepository.GetByIdAsync(id, trackChanges: false)
-            );
+        var game = await GetGameByIdOrThrowExceptionAsync(id, trackChanges:false);
+        return _mapper.Map<GameDto>(game);
     }
 
     public async Task<GameDto> GetGameByTitleAsync(string title)
@@ -76,5 +76,12 @@ public class GameService : IGameService
         _uow.GameRepository.Delete(tournament);
         await _uow.CompleteAsync();
         return true;
+    }
+
+    private async Task<Game> GetGameByIdOrThrowExceptionAsync(int id, bool trackChanges)
+    {
+        var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges);
+        if (game is null) throw new GameNotFoundException(id);
+        return game;
     }
 }
