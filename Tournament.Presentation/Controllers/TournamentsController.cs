@@ -58,7 +58,7 @@ public class TournamentsController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<ActionResult> PatchTournamentAsync(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
     {
-        if (patchDocument is null) throw new GlobalBadRequestException();
+        if (patchDocument is null) throw new InvalidIdBadRequestException();
 
         var (tournament,tournamentPatchDto) = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
 

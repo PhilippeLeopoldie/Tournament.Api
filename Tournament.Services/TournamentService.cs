@@ -44,7 +44,7 @@ public class TournamentService : ITournamentService
 
     public async Task PutTournamentAsync(int id, TournamentUpdateDto dto)
     {
-        if (id != dto.Id) throw new GlobalBadRequestException(id);
+        if (id != dto.Id) throw new InvalidIdBadRequestException(id);
         var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames:false, trackChanges: true);
         _mapper.Map(dto, tournament);
         await _uow.CompleteAsync();
