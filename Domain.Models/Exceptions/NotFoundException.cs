@@ -27,11 +27,11 @@ public class TournamentNotFoundException : NotFoundException
 
 public class GameNotFoundException : NotFoundException
 {
-    public GameNotFoundException(int id) : base($"The tournament with id: {id} is not found!")
+    public GameNotFoundException(int id) : base($"The game with id: {id} is not found!")
     {
     }
 
-    public GameNotFoundException(string title) : base($"The tournament with title: {title} is not found!")
+    public GameNotFoundException(string title) : base($"The game with title: {title} is not found!")
     {
     }
 }
