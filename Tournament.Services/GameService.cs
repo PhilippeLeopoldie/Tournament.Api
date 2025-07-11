@@ -66,13 +66,11 @@ public class GameService : IGameService
         return _mapper.Map<GameDto>(game);
     }
 
-    public async Task<bool> DeleteGameAsync(int id)
+    public async Task DeleteGameAsync(int id)
     {
-        var tournament = await _uow.GameRepository.GetByIdAsync(id,trackChanges: true);
-        if (tournament is null) return false;
+        var tournament = await GetGameByIdOrThrowExceptionAsync(id,trackChanges: true);
         _uow.GameRepository.Delete(tournament);
         await _uow.CompleteAsync();
-        return true;
     }
 
     private async Task<Game> GetGameByIdOrThrowExceptionAsync(int id, bool trackChanges)

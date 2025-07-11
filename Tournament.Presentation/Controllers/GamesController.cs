@@ -68,7 +68,7 @@ namespace Tournament.Presentation.Controllers
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<GameDto>> PostGameAsync([FromQuery]GameCreateDto dto)
+        public async Task<ActionResult<GameDto>> PostGameAsync([FromBody]GameCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -80,11 +80,8 @@ namespace Tournament.Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGameAsync(int id)
         {
-            var isDeleted = await _serviceManager.GameService.DeleteGameAsync(id);
-
-            return !isDeleted
-                ? NotFound($"Game with id:{id} not found!")
-                : NoContent();
+            await _serviceManager.GameService.DeleteGameAsync(id);
+            return NoContent();
         }
     }
 }
