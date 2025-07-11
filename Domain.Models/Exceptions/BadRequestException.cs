@@ -12,7 +12,7 @@ public abstract class BadRequestException : Exception
 
 public class InvalidIdBadRequestException : BadRequestException
 {
-    public InvalidIdBadRequestException(int id) : base($"id: '{id}' do not match id from body")
+    public InvalidIdBadRequestException(int id) : base($"id: '{id}' do not match tournamentId")
     {
     }
     public InvalidIdBadRequestException() : base($"No patchDocument")
