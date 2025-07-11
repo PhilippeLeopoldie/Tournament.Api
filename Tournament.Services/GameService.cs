@@ -32,6 +32,7 @@ public class GameService : IGameService
     public async Task<GameDto> GetGameByTitleAsync(string title)
     {
         var game = await _uow.GameRepository.GetByTitleAsync(title, trackChanges: false);
+        if(game is null) throw new GameNotFoundException(title);
         return _mapper.Map<GameDto>(game);
     }
 

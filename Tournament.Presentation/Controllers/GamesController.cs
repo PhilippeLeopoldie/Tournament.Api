@@ -36,7 +36,6 @@ namespace Tournament.Presentation.Controllers
         public async Task<ActionResult<GameDto>> GetGameByTitleAsync(string title)
         {
             var dto = await _serviceManager.GameService.GetGameByTitleAsync(title);
-            if (dto is null) return NotFound($"No game with 'Title': {title} found!");
             return Ok(dto);
         }
 
