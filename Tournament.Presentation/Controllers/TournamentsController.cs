@@ -38,7 +38,7 @@ public class TournamentsController : ControllerBase
 
         // GET: api/TournamentDetails/5
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<TournamentDto>> GetTournamentByIdAsync(int id, bool includeGames)
+    public async Task<ActionResult<TournamentDto>> GetTournamentById(int id, bool includeGames)
     {
         return Ok(await _serviceManager.TournamentService
             .GetTournamentByIdAsync(id, includeGames, trackChanges: false)
@@ -78,7 +78,7 @@ public class TournamentsController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var createdTournament = await _serviceManager.TournamentService.PostTournamentAsync(dto);
-        return CreatedAtAction("GetTournamentByIdAsync", new { id = createdTournament.Id }, createdTournament);
+        return CreatedAtAction("GetTournamentById", new { id = createdTournament.Id }, createdTournament);
     }
     
     // DELETE: api/TournamentDetails/5

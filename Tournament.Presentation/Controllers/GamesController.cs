@@ -26,8 +26,8 @@ namespace Tournament.Presentation.Controllers
         }
 
         // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GameDto>> GetGameByIdAsync(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<GameDto>> GetGameById(int id)
         {
             var gameDto = await _serviceManager.GameService.GetGameByIdAsync(id, trackChanges: false);
             return Ok(gameDto);
@@ -73,7 +73,7 @@ namespace Tournament.Presentation.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var createdGame = await _serviceManager.GameService.PostGameAsync(dto);
-            return CreatedAtAction("GetGameByIdAsync", new { id = createdGame.Id }, createdGame);
+            return CreatedAtAction("GetGameById", new { id = createdGame.Id }, createdGame);
         }
 
         // DELETE: api/Games/5
