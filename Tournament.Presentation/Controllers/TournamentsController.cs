@@ -23,7 +23,7 @@ public class TournamentsController : ControllerBase
 
     // GET: api/TournamentDetails
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentAsync([FromQuery]TournamentRequestParams requestParams, bool sortByTitle)
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentsAsync([FromQuery]TournamentRequestParams requestParams, bool sortByTitle)
     {
         var pagedResult = await _serviceManager.TournamentService.GetAllTournamentsAsync(requestParams,sortByTitle, trackChanges:false);
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
