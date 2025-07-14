@@ -18,7 +18,8 @@ public class TournamentsController : ControllerBase
 
     public TournamentsController (IServiceManager serviceManager)
     {
-        _serviceManager = serviceManager;
+        _serviceManager = serviceManager ??
+            throw new ArgumentNullException(nameof(serviceManager));
     }
 
     // GET: api/TournamentDetails
@@ -38,7 +39,7 @@ public class TournamentsController : ControllerBase
 
         // GET: api/TournamentDetails/5
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<TournamentDto>> GetTournamentById(int id, bool includeGames)
+    public async Task<ActionResult<TournamentDto>> GetTournamentById(int id,[FromQuery] bool includeGames)
     {
         return Ok(await _serviceManager.TournamentService
             .GetTournamentByIdAsync(id, includeGames, trackChanges: false)
@@ -48,7 +49,7 @@ public class TournamentsController : ControllerBase
     // PUT: api/TournamentDetails/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTournamentAsync(int id, TournamentUpdateDto dto)
+    public async Task<IActionResult> PutTournamentAsync(int id,[FromBody] TournamentUpdateDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _serviceManager.TournamentService.PutTournamentAsync(id , dto);
@@ -56,7 +57,7 @@ public class TournamentsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult> PatchTournamentAsync(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+    public async Task<ActionResult> PatchTournamentAsync(int id,[FromBody] JsonPatchDocument<TournamentUpdateDto> patchDocument)
     {
         if (patchDocument is null) throw new InvalidEntryBadRequestException();
 
