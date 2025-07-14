@@ -53,7 +53,7 @@ namespace Tournament.Presentation.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDocument)
         {
-            if (patchDocument is null) throw new InvalidIdBadRequestException();
+            if (patchDocument is null) throw new InvalidEntryBadRequestException();
 
             var (game,gamePatchDto) = await _serviceManager.GameService.GameToPatchAsync(gameId:id,tournamentId);
 
@@ -78,9 +78,9 @@ namespace Tournament.Presentation.Controllers
 
         // DELETE: api/Games/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGameAsync(int id)
+        public async Task<IActionResult> DeleteGameAsync(int id, int tournamentId)
         {
-            await _serviceManager.GameService.DeleteGameAsync(id);
+            await _serviceManager.GameService.DeleteGameAsync(id, tournamentId);
             return NoContent();
         }
     }

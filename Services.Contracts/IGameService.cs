@@ -17,5 +17,5 @@ public interface IGameService
     Task<(Game, GameUpdateDto)> GameToPatchAsync(int gameId, int tounamentId);
     Task SavePatchGameAsync(Game game, GameUpdateDto dto);
     Task<GameDto> PostGameAsync(GameCreateDto dto);
-    Task DeleteGameAsync(int id);
+    Task DeleteGameAsync(int id, int tournamentId);
 }

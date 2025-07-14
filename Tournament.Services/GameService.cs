@@ -39,7 +39,7 @@ public class GameService : IGameService
 
     public async Task PutGameAsync(int id, GameUpdateDto dto)
     {
-        if (id != dto.Id) throw new InvalidIdBadRequestException(id);
+        if (id != dto.Id) throw new InvalidEntryBadRequestException(id);
         var game = await GetGameByIdOrThrowExceptionAsync(id, trackChanges: true);
         var updatedGame = _mapper.Map(dto,game);
         await _uow.CompleteAsync();
@@ -66,9 +66,9 @@ public class GameService : IGameService
         return _mapper.Map<GameDto>(game);
     }
 
-    public async Task DeleteGameAsync(int id)
+    public async Task DeleteGameAsync(int gameId, int tournamentId)
     {
-        var tournament = await GetGameByIdOrThrowExceptionAsync(id,trackChanges: true);
+        var tournament = await GetGameByIdForTournamentOrThrowExceptionAsync(gameId, tournamentId,trackChanges: true);
         _uow.GameRepository.Delete(tournament);
         await _uow.CompleteAsync();
     }
@@ -85,7 +85,7 @@ public class GameService : IGameService
         var game = await _uow.GameRepository.FindByCondition(
             game => game.Id.Equals(gameId) && game.TournamentDetailId.Equals(tournamentId),
             trackChanges).FirstOrDefaultAsync();
-        if (game is null) throw new InvalidIdBadRequestException(gameId);
+        if (game is null) throw new InvalidGameIdForTournamentBadRequestException(gameId, tournamentId);
         return game;
     }
 }

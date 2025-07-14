@@ -20,7 +20,6 @@ public class TournamentNotFoundException : NotFoundException
     public TournamentNotFoundException(string title) : base($"The tournament with title: {title} is not found!")
     {
     }
-
 }
 
 

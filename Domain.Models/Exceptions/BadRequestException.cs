@@ -10,12 +10,20 @@ public abstract class BadRequestException : Exception
     }
 }
 
-public class InvalidIdBadRequestException : BadRequestException
+public class InvalidGameIdForTournamentBadRequestException : BadRequestException
 {
-    public InvalidIdBadRequestException(int id) : base($"id: '{id}' do not match tournamentId")
+    public InvalidGameIdForTournamentBadRequestException(int gameId, int tournamentId ) : base($"there is no gameId: '{gameId}' for tournamentId: '{tournamentId}'")
     {
     }
-    public InvalidIdBadRequestException() : base($"No patchDocument")
+    
+}
+
+public class InvalidEntryBadRequestException : BadRequestException
+{
+    public InvalidEntryBadRequestException(int id) : base($"Invalid Id: '{id}'")
+    {
+    }
+    public InvalidEntryBadRequestException() : base($"No patchDocument")
     {
     }
 }

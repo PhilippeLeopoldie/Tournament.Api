@@ -44,7 +44,7 @@ public static class ExceptionMiddleware
                 title: gameNotFoundException.Title,
                 detail: gameNotFoundException.Message,
                 instance: context.Request.Path),
-            InvalidIdBadRequestException badRequestException => problemDetailsFactory.CreateProblemDetails(
+            InvalidGameIdForTournamentBadRequestException badRequestException => problemDetailsFactory.CreateProblemDetails(
                 context,
                 StatusCodes.Status400BadRequest,
                 title: badRequestException.Title,
