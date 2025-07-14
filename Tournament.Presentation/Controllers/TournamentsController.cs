@@ -42,7 +42,7 @@ public class TournamentsController : ControllerBase
     public async Task<ActionResult<TournamentDto>> GetTournamentById(int id,[FromQuery] bool includeGames)
     {
         return Ok(await _serviceManager.TournamentService
-            .GetTournamentByIdAsync(id, includeGames, trackChanges: false)
+            .GetTournamentByIdAsync(id, includeGames)
             );
     }
     

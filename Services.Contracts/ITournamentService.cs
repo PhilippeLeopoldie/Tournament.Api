@@ -11,10 +11,7 @@ public interface ITournamentService
         bool sortByTitle,
         bool trackChanges
         );
-    Task<TournamentDto> GetTournamentByIdAsync(
-        int id,
-        bool includeGames,
-        bool trackChanges);
+    Task<TournamentDto> GetTournamentByIdAsync(int id,bool includeGames);
 
     Task<TournamentDto> GetTournamentByTitleAsync(string title);
 

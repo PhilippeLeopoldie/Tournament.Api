@@ -29,7 +29,7 @@ public class TournamentService : ITournamentService
         return (tournamentsDto, pagedList.MetaData);
     }
 
-    public async Task<TournamentDto> GetTournamentByIdAsync(int id, bool includeGames, bool trackChanges)
+    public async Task<TournamentDto> GetTournamentByIdAsync(int id, bool includeGames)
     {
         var tournament = await GetTournamentByIdOrThrowExceptionAsync(id, includeGames, trackChanges:false);
         return _mapper.Map<TournamentDto>(tournament);
