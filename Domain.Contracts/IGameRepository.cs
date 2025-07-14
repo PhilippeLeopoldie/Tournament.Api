@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 //using Tournament.Core.Entities;
@@ -17,4 +18,5 @@ public interface IGameRepository
     void Create(Game game);
     //void Update(Game game);
     void Delete(Game game);
+    IQueryable<Game> FindByCondition(Expression<Func<Game, bool>> condition, bool trackChanges = false);
 }

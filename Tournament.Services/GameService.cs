@@ -2,6 +2,7 @@
 using Domain.Contracts;
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Tournaments.Shared.Dtos;
 
@@ -46,8 +47,7 @@ public class GameService : IGameService
 
     public async Task<(Game,GameUpdateDto)> GameToPatchAsync(int gameId, int tournamentId)
     {
-        if(gameId != tournamentId) throw new InvalidIdBadRequestException(gameId);
-        var game = await GetGameByIdOrThrowExceptionAsync(gameId, trackChanges: true);
+        var game = await GetGameByIdForTournamentOrThrowExceptionAsync(gameId, tournamentId, trackChanges:true);
         var dto = _mapper.Map<GameUpdateDto>(game);
         return (game,dto);
     }
@@ -77,6 +77,15 @@ public class GameService : IGameService
     {
         var game = await _uow.GameRepository.GetByIdAsync(id, trackChanges);
         if (game is null) throw new GameNotFoundException(id);
+        return game;
+    }
+
+    private async Task<Game> GetGameByIdForTournamentOrThrowExceptionAsync(int gameId,int tournamentId, bool trackChanges)
+    {
+        var game = await _uow.GameRepository.FindByCondition(
+            game => game.Id.Equals(gameId) && game.TournamentDetailId.Equals(tournamentId),
+            trackChanges).FirstOrDefaultAsync();
+        if (game is null) throw new InvalidIdBadRequestException(gameId);
         return game;
     }
 }
