@@ -50,6 +50,12 @@ public static class ExceptionMiddleware
                 title: badRequestException.Title,
                 detail: badRequestException.Message,
                 instance: context.Request.Path),
+            InvalidEntryBadRequestException badRequestException => problemDetailsFactory.CreateProblemDetails(
+            context,
+            StatusCodes.Status400BadRequest,
+            title: badRequestException.Title,
+            detail: badRequestException.Message,
+            instance: context.Request.Path),
             _ => problemDetailsFactory.CreateProblemDetails(
                 context,
                 StatusCodes.Status500InternalServerError,
