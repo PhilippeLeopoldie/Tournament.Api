@@ -22,7 +22,7 @@ public class TournamentsController : ControllerBase
             throw new ArgumentNullException(nameof(serviceManager));
     }
 
-    // GET: api/TournamentDetails
+    // GET: api/Tournaments
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentsAsync([FromQuery]TournamentRequestParams requestParams, bool sortByTitle)
     {
@@ -37,7 +37,7 @@ public class TournamentsController : ControllerBase
         return Ok(await _serviceManager.TournamentService.GetTournamentByTitleAsync(title));
     }
 
-        // GET: api/TournamentDetails/5
+        // GET: api/Tournaments/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentById(int id,[FromQuery] bool includeGames)
     {
@@ -46,7 +46,7 @@ public class TournamentsController : ControllerBase
             );
     }
     
-    // PUT: api/TournamentDetails/5
+    // PUT: api/Tournaments/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentAsync(int id,[FromBody] TournamentUpdateDto dto)
@@ -61,17 +61,17 @@ public class TournamentsController : ControllerBase
     {
         if (patchDocument is null) throw new InvalidEntryBadRequestException();
 
-        var (tournament,tournamentPatchDto) = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
+        var (tournament, patchDto) = await _serviceManager.TournamentService.TournamentToPatchAsync(id);
 
-        patchDocument.ApplyTo(tournamentPatchDto, ModelState);
-        TryValidateModel(tournamentPatchDto);
+        patchDocument.ApplyTo(patchDto, ModelState);
+        TryValidateModel(patchDto);
         if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-        await _serviceManager.TournamentService.SavePatchTournamentAsync(tournament ,tournamentPatchDto);
+        await _serviceManager.TournamentService.SavePatchTournamentAsync(tournament ,patchDto);
         return NoContent();
     }
     
-    // POST: api/TournamentDetails
+    // POST: api/Tournaments
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody]TournamentCreateDto dto)
@@ -82,7 +82,7 @@ public class TournamentsController : ControllerBase
         return CreatedAtAction("GetTournamentById", new { id = createdTournament.Id }, createdTournament);
     }
     
-    // DELETE: api/TournamentDetails/5
+    // DELETE: api/Tournaments/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentAsync(int id)
     {
