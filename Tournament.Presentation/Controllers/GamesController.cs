@@ -19,9 +19,9 @@ namespace Tournament.Presentation.Controllers
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesAsync(bool sortByTitle)
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesAsync([FromQuery]int tournamentId, bool sortByTitle)
         {
-            var dto = await _serviceManager.GameService.GetAllGamesAsync(sortByTitle, trackChanges: false);
+            var dto = await _serviceManager.GameService.GetGamesAsync(tournamentId,sortByTitle, trackChanges: false);
             return Ok(dto);
         }
 

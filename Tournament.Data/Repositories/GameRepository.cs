@@ -12,9 +12,9 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
     }
 
 
-    public async Task<IEnumerable<Game>> GetAllAsync(bool sortByTitle = false, bool trackChanges = false)
+    public async Task<IEnumerable<Game>> GetGamesAsync(int tournamentId,bool sortByTitle = false, bool trackChanges = false)
     {
-        var query = FindAll(trackChanges);
+        var query = FindByCondition(game => game.TournamentDetailId.Equals(tournamentId),trackChanges);
         if (sortByTitle) query = query.OrderBy(game => game.Title);
         return await query.ToListAsync();
     }

@@ -11,7 +11,7 @@ namespace Domain.Contracts;
 
 public interface IGameRepository
 {
-    Task<IEnumerable<Game>> GetAllAsync(bool sortedByTitle, bool trackChanges);
+    Task<IEnumerable<Game>> GetGamesAsync(int tournamentId, bool sortedByTitle, bool trackChanges);
     Task<Game> GetByIdAsync(int id, bool trackChanges);
     Task<Game?> GetByTitleAsync(string title, bool trackChanges);
     //Task<bool> AnyAsync(int id);

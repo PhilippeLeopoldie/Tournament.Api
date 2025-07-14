@@ -19,9 +19,9 @@ public class GameService : IGameService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<GameDto>> GetAllGamesAsync(bool sortByTitle, bool trackChanges = false)
+    public async Task<IEnumerable<GameDto>> GetGamesAsync(int tournamentId, bool sortByTitle, bool trackChanges = false)
     {
-        return _mapper.Map<IEnumerable<GameDto>>(await _uow.GameRepository.GetAllAsync(sortByTitle, trackChanges));
+        return _mapper.Map<IEnumerable<GameDto>>(await _uow.GameRepository.GetGamesAsync(tournamentId,sortByTitle, trackChanges));
     }
 
     public async Task<GameDto> GetGameByIdAsync(int id, bool trackChanges)
