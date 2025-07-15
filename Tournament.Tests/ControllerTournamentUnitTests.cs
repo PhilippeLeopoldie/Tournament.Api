@@ -1,4 +1,5 @@
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,8 +15,8 @@ public class ControllerTournamentUnitTests
     private readonly Mock<IServiceManager> _mockServiceManager;
     private readonly Mock<ITournamentService> _mockTournamentService;
     private readonly TournamentsController _tournamentsController;
-    
 
+    private static readonly DateTime _now = new DateTime(2025, 1, 1);
 
     public ControllerTournamentUnitTests()
     {
@@ -54,9 +55,36 @@ public class ControllerTournamentUnitTests
         var okResult = Assert.IsType<OkObjectResult>(tournamentsDto.Result);
         var okResultTournamentsDto = Assert.IsAssignableFrom<IEnumerable<TournamentDto>>(okResult.Value);
         Assert.Equal(3, okResultTournamentsDto.Count());
+    }
 
+    [Fact]
+    public async Task GetTournamentById_ShouldReturnTournament()
+    {
+        // Arrange
+        var dto = new TournamentDto { Id = 1, Title = "Title1", StartDate = _now };
+        _mockServiceManager.Setup(x => x.TournamentService.GetTournamentByIdAsync(It.IsAny<int>(), It.IsAny<bool>()))
+            .ReturnsAsync(dto);
 
+        // Act
+        var resultDto = await _tournamentsController.GetTournamentById(dto.Id, false);
 
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(resultDto.Result);
+        var okResultDto = Assert.IsType<TournamentDto>(okResult.Value);
+        Assert.Equal("Title1", okResultDto.Title);
+        Assert.Equal(1, okResultDto.Id);
+
+    }
+
+    [Fact]
+    public async Task GetTournamentById_WhenNotFound_ShouldReturnNotFound()
+    {
+        // Arrange
+        _mockTournamentService.Setup(s => s.GetTournamentByIdAsync(99, false))
+            .ThrowsAsync(new TournamentNotFoundException(99));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentById(99, false));
     }
 
     private List<TournamentDto> GetTournamentsDto()
