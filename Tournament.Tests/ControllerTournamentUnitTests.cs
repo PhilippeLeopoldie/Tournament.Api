@@ -1,6 +1,3 @@
-using AutoMapper;
-using AutoMapper.Configuration.Annotations;
-using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +9,7 @@ using Tournaments.Shared.Request;
 
 namespace Tournament.Tests;
 
-public class ControllerTournamentTest
+public class ControllerTournamentUnitTests
 {
     private readonly Mock<IServiceManager> _mockServiceManager;
     private readonly Mock<ITournamentService> _mockTournamentService;
@@ -20,7 +17,7 @@ public class ControllerTournamentTest
     
 
 
-    public ControllerTournamentTest()
+    public ControllerTournamentUnitTests()
     {
         _mockServiceManager = new Mock<IServiceManager>();
         _mockTournamentService = new Mock<ITournamentService>();
