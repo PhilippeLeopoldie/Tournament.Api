@@ -9,9 +9,9 @@ using Tournaments.Shared.Dtos;
 
 namespace Tournament.Infrastructure.Data;
 
-public class TournamentMappings : Profile
+public class AutoMapperProfile : Profile
 {
-    public TournamentMappings() 
+    public AutoMapperProfile() 
     {
         CreateMap<TournamentDetail, TournamentDto>().ReverseMap();
         CreateMap<Game, GameDto>().ReverseMap();
