@@ -10,6 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
@@ -21,7 +34,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain.Contracts\Domain.Contracts.csproj" />
     <ProjectReference Include="..\Services.Contracts\Services.Contracts.csproj" />
+    <ProjectReference Include="..\Tournament.Data\Tournament.Infrastructure.csproj" />
     <ProjectReference Include="..\Tournament.Presentation\Tournament.Presentation.csproj" />
+    <ProjectReference Include="..\Tournament.Services\Tournament.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
