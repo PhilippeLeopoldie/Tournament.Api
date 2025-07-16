@@ -16,6 +16,7 @@ public class ControllerTournamentUnitTests
 {
     private readonly Mock<IServiceManager> _mockServiceManager;
     private readonly Mock<ITournamentService> _mockTournamentService;
+    private readonly Mock<IObjectModelValidator> _mockValidator;
     private readonly TournamentsController _tournamentsController;
     private readonly SeedData _data;
 
@@ -26,9 +27,9 @@ public class ControllerTournamentUnitTests
         _data = new SeedData();
         _mockServiceManager = new Mock<IServiceManager>();
         _mockTournamentService = new Mock<ITournamentService>();
+        _mockValidator = new Mock<IObjectModelValidator>();
 
         _mockServiceManager.Setup(x => x.TournamentService).Returns(_mockTournamentService.Object);
-
         _tournamentsController = new TournamentsController(_mockServiceManager.Object);
 
         // to create a basic HttpContext so that Response.Headers from controller is available during the test
@@ -37,8 +38,7 @@ public class ControllerTournamentUnitTests
             HttpContext = new DefaultHttpContext()
         };
 
-        var mockValidator = new Mock<IObjectModelValidator>();
-        mockValidator.Setup(v =>
+        _mockValidator.Setup(v =>
             v.Validate(
                 It.IsAny<ActionContext>(),
                 It.IsAny<ValidationStateDictionary>(),
@@ -46,7 +46,7 @@ public class ControllerTournamentUnitTests
                 It.IsAny<object>())
         );
 
-        _tournamentsController.ObjectValidator = mockValidator.Object;
+        _tournamentsController.ObjectValidator = _mockValidator.Object;
     }
 
     
@@ -216,17 +216,10 @@ public class ControllerTournamentUnitTests
         _mockTournamentService.Setup(s => s.SavePatchTournamentAsync(entity, dto))
             .Returns(Task.CompletedTask);
 
-        // Setup ControllerContext and ObjectValidator
-        _tournamentsController.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext()
-        };
-
-        var mockValidator = new Mock<IObjectModelValidator>();
-        mockValidator.Setup(v =>
+        _mockValidator.Setup(v =>
             v.Validate(It.IsAny<ActionContext>(), It.IsAny<ValidationStateDictionary>(), It.IsAny<string>(), It.IsAny<object>())
         );
-        _tournamentsController.ObjectValidator = mockValidator.Object;
+        _tournamentsController.ObjectValidator = _mockValidator.Object;
 
 
         // Act
@@ -313,15 +306,8 @@ public class ControllerTournamentUnitTests
             .Setup(s => s.PostTournamentAsync(createDto))
             .ReturnsAsync(createdDto);
 
-        // Setup ControllerContext and ObjectValidator to avoid ModelState issues
-        _tournamentsController.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext()
-        };
-
-        var mockValidator = new Mock<IObjectModelValidator>();
-        mockValidator.Setup(v => v.Validate(It.IsAny<ActionContext>(), null, null, null));
-        _tournamentsController.ObjectValidator = mockValidator.Object;
+        _mockValidator.Setup(v => v.Validate(It.IsAny<ActionContext>(), null, null, null));
+        _tournamentsController.ObjectValidator = _mockValidator.Object;
 
         // Act
         var result = await _tournamentsController.PostTournament(createDto);
