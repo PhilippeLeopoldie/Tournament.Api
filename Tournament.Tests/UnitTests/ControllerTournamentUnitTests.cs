@@ -242,12 +242,10 @@ public class ControllerTournamentUnitTests
     [Fact]
     public async Task PatchTournamentAsync_NullPatchDocument_ThrowsInvalidEntryBadRequestException()
     {
-        // Arrange
-        JsonPatchDocument<TournamentUpdateDto>? patchDoc = null;
-
+       
         // Act & Assert
         await Assert.ThrowsAsync<InvalidEntryBadRequestException>(() =>
-            _tournamentsController.PatchTournamentAsync(1, patchDoc!));
+            _tournamentsController.PatchTournamentAsync(1, null!));
         _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Never);
     }
 
@@ -292,6 +290,63 @@ public class ControllerTournamentUnitTests
         _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Once);
         _mockServiceManager.Verify(s => s.TournamentService.SavePatchTournamentAsync(
             It.IsAny<TournamentDetail>(), It.IsAny<TournamentUpdateDto>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task PostTournament_ValidTournament_ReturnsCreatedAtActionResult()
+    {
+        // Arrange
+        var createDto = new TournamentCreateDto
+        {
+            Title = "Test Tournament",
+            StartDate = DateTime.Now
+        };
+
+        var createdDto = new TournamentDto
+        {
+            Id = 1,
+            Title = "Test Tournament",
+            StartDate = createDto.StartDate
+        };
+
+        _mockTournamentService
+            .Setup(s => s.PostTournamentAsync(createDto))
+            .ReturnsAsync(createdDto);
+
+        // Setup ControllerContext and ObjectValidator to avoid ModelState issues
+        _tournamentsController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var mockValidator = new Mock<IObjectModelValidator>();
+        mockValidator.Setup(v => v.Validate(It.IsAny<ActionContext>(), null, null, null));
+        _tournamentsController.ObjectValidator = mockValidator.Object;
+
+        // Act
+        var result = await _tournamentsController.PostTournament(createDto);
+
+        // Assert
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+        Assert.Equal("GetTournamentById", createdResult.ActionName);
+        Assert.Equal(createdDto, createdResult.Value);
+        _mockServiceManager.Verify(s => s.TournamentService.PostTournamentAsync(createDto), Times.Once);
+    }
+
+    [Fact]
+    public async Task PostTournament_InvalidModel_ReturnsBadRequest()
+    {
+        // Arrange
+        var createDto = new TournamentCreateDto(); // Invalid due to missing required fields
+        _tournamentsController.ModelState.AddModelError("Title", "Required");
+
+        // Act
+        var result = await _tournamentsController.PostTournament(createDto);
+
+        // Assert
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.IsType<SerializableError>(badRequest.Value);
+        _mockServiceManager.Verify(s => s.TournamentService.PostTournamentAsync(It.IsAny<TournamentCreateDto>()), Times.Never);
     }
 
 
