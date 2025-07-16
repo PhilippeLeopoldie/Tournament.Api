@@ -130,7 +130,61 @@ public class ControllerTournamentUnitTests
         _mockServiceManager.Verify(s => s.TournamentService.GetTournamentByTitleAsync(It.IsAny<string>()), Times.Once());
     }
 
+    [Fact]
+    public async Task PutTournamentAsync_ValidDto_ReturnsNoContent()
+    {
+        // Arrange
+        var dto = new TournamentUpdateDto
+        {
+            Title = "Updated Title",
+            StartDate = DateTime.Now,
+        };
 
+        _mockTournamentService
+            .Setup(s => s.PutTournamentAsync(1, dto))
+            .Returns(Task.CompletedTask); 
 
+        // Act
+        var result = await _tournamentsController.PutTournamentAsync(1, dto);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
+        _mockServiceManager.Verify(s => s.TournamentService.PutTournamentAsync(1, dto), Times.Once);
+    }
+
+    [Fact]
+    public async Task PutTournamentAsync_InvalidModelState_ReturnsBadRequest()
+    {
+        // Arrange
+        _tournamentsController.ModelState.AddModelError("Title", "Required");
+
+        var dto = new TournamentUpdateDto(); // Missing Title, etc.
+
+        // Act
+        var result = await _tournamentsController.PutTournamentAsync(1, dto);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.IsType<SerializableError>(badRequestResult.Value);
+    }
+
+    [Fact]
+    public async Task PutTournamentAsync_TournamentNotFound_ThrowsException()
+    {
+        // Arrange
+        var dto = new TournamentUpdateDto
+        {
+            Title = "Nonexistent Tournament",
+            StartDate = DateTime.Now,
+        };
+
+        _mockTournamentService
+            .Setup(s => s.PutTournamentAsync(99, dto))
+            .ThrowsAsync(new TournamentNotFoundException(99));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.PutTournamentAsync(99, dto));
+        _mockServiceManager.Verify(s => s.TournamentService.PutTournamentAsync(99, dto), Times.Once);
+    }
 
 }
