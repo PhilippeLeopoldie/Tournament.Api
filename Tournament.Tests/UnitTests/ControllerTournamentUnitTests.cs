@@ -8,18 +8,20 @@ using Tournament.Presentation.Controllers;
 using Tournaments.Shared.Dtos;
 using Tournaments.Shared.Request;
 
-namespace Tournament.Tests;
+namespace Tournament.Tests.UnitTests;
 
 public class ControllerTournamentUnitTests
 {
     private readonly Mock<IServiceManager> _mockServiceManager;
     private readonly Mock<ITournamentService> _mockTournamentService;
     private readonly TournamentsController _tournamentsController;
+    private readonly SeedData _data;
 
     private static readonly DateTime _now = new DateTime(2025, 1, 1);
 
     public ControllerTournamentUnitTests()
     {
+        _data = new SeedData();
         _mockServiceManager = new Mock<IServiceManager>();
         _mockTournamentService = new Mock<ITournamentService>();
 
@@ -40,9 +42,9 @@ public class ControllerTournamentUnitTests
     public async Task GetTournaments_ShouldReturnAllTournaments()
     {
         // Arrange
-        var tournaments = GetTournaments();
+        var tournaments = _data.GetTournaments();
        var pagedList = new PagedList<TournamentDetail>(tournaments,tournaments.Count,pageNumber:1,pageSize:6);
-        var dtos = GetTournamentsDto();
+        var dtos = _data.GetTournamentsDto();
         _mockTournamentService.Setup(x => x.GetAllTournamentsAsync(It.IsAny<TournamentRequestParams>(), It.IsAny<bool>(), It.IsAny<bool>()))
             .ReturnsAsync((dtos,pagedList.MetaData));
 
@@ -77,7 +79,7 @@ public class ControllerTournamentUnitTests
     }
 
     [Fact]
-    public async Task GetTournamentById_WhenNotFound_ShouldReturnNotFound()
+    public async Task GetTournamentById_ShouldReturnNotFound()
     {
         // Arrange
         _mockTournamentService.Setup(s => s.GetTournamentByIdAsync(99, false))
@@ -87,63 +89,5 @@ public class ControllerTournamentUnitTests
         await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentById(99, false));
     }
 
-    private List<TournamentDto> GetTournamentsDto()
-    {
-        return new List<TournamentDto>()
-        {
-            new()
-            {
-                Id = 1,
-                Title = "Tournament1",
-                StartDate = DateTime.Now,
-                Games = []
-            },
-            new()
-            {
-                Id = 2,
-                Title = "Tournament2",
-                StartDate = DateTime.Now,
-                Games = []
-            },
-            new()
-            {
-                Id = 3,
-                Title = "Tournament3",
-                StartDate = DateTime.Now,
-                Games = []
-            }
-        };
-    }
-
-    private List<TournamentDetail> GetTournaments()
-    {
-        return new List<TournamentDetail>
-        {
-            new()
-            {
-                Id = 1,
-                Title = "Tournament1",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddMonths(3),
-                Games = []
-            },
-            new()
-            {
-                Id = 2,
-                Title = "Tournament2",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddMonths(3),
-                Games = []
-            },
-            new()
-            {
-                Id = 3,
-                Title = "Tournament3",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddMonths(3),
-                Games = []
-            },
-
-        };
-    }
+    
 }
