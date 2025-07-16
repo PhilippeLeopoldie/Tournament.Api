@@ -23,6 +23,8 @@ public class TournamentsController : ControllerBase
     }
 
     // GET: api/Tournaments
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentsAsync([FromQuery]TournamentRequestParams requestParams, bool sortByTitle)
     {
@@ -31,13 +33,17 @@ public class TournamentsController : ControllerBase
         return Ok(pagedResult.tournamentsDto);
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("title")]
     public async Task<ActionResult<TournamentDto>> GetTournamentByTitleAsync(string title)
     {
         return Ok(await _serviceManager.TournamentService.GetTournamentByTitleAsync(title));
     }
 
-        // GET: api/Tournaments/5
+    // GET: api/Tournaments/5
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentById(int id,[FromQuery] bool includeGames)
     {
@@ -45,9 +51,12 @@ public class TournamentsController : ControllerBase
             .GetTournamentByIdAsync(id, includeGames)
             );
     }
-    
+
     // PUT: api/Tournaments/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentAsync(int id,[FromBody] TournamentUpdateDto dto)
     {
@@ -56,6 +65,10 @@ public class TournamentsController : ControllerBase
         return NoContent();
     }
 
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPatch("{id}")]
     public async Task<ActionResult> PatchTournamentAsync(int id,[FromBody] JsonPatchDocument<TournamentUpdateDto> patchDocument)
     {
@@ -70,9 +83,11 @@ public class TournamentsController : ControllerBase
         await _serviceManager.TournamentService.SavePatchTournamentAsync(tournament ,patchDto);
         return NoContent();
     }
-    
+
     // POST: api/Tournaments
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost]
     public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody]TournamentCreateDto dto)
     {
