@@ -1,6 +1,7 @@
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Services.Contracts;
@@ -186,5 +187,87 @@ public class ControllerTournamentUnitTests
         await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.PutTournamentAsync(99, dto));
         _mockServiceManager.Verify(s => s.TournamentService.PutTournamentAsync(99, dto), Times.Once);
     }
+
+    [Fact]
+    public async Task PatchTournamentAsync_ValidPatch_ReturnsNoContent()
+    {
+        // Arrange
+        var patchDoc = new JsonPatchDocument<TournamentUpdateDto>();
+        patchDoc.Replace(t => t.Title, "Updated Title");
+
+        var dto = new TournamentUpdateDto { Title = "Original Title" };
+        var entity = new TournamentDetail { Id = 1, Title = "Original Title" };
+
+        _mockTournamentService.Setup(s => s.TournamentToPatchAsync(1))
+            .ReturnsAsync((entity, dto));
+
+        _mockTournamentService.Setup(s => s.SavePatchTournamentAsync(entity, dto))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _tournamentsController.PatchTournamentAsync(1, patchDoc);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
+        _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Once);
+        _mockServiceManager.Verify(s => s.TournamentService.SavePatchTournamentAsync(
+            It.IsAny<TournamentDetail>(), It.IsAny<TournamentUpdateDto>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task PatchTournamentAsync_NullPatchDocument_ThrowsInvalidEntryBadRequestException()
+    {
+        // Arrange
+        JsonPatchDocument<TournamentUpdateDto>? patchDoc = null;
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidEntryBadRequestException>(() =>
+            _tournamentsController.PatchTournamentAsync(1, patchDoc!));
+        _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task PatchTournamentAsync_InvalidModelState_ReturnsUnprocessableEntity()
+    {
+        // Arrange
+        var patchDoc = new JsonPatchDocument<TournamentUpdateDto>();
+        patchDoc.Replace(t => t.Title, ""); // Invalid (assuming required)
+
+        var dto = new TournamentUpdateDto { Title = "Valid Title" };
+        var tournamentEntity = new TournamentDetail { Id = 1, Title = "Tournament" };
+
+        _mockTournamentService.Setup(s => s.TournamentToPatchAsync(1))
+            .ReturnsAsync((tournamentEntity, dto));
+
+        _tournamentsController.ModelState.AddModelError("Title", "The Title field is required."); // Simulate validation failure
+
+        // Act
+        var result = await _tournamentsController.PatchTournamentAsync(1, patchDoc);
+
+        // Assert
+        var unprocessable = Assert.IsType<UnprocessableEntityObjectResult>(result);
+        Assert.Equal(StatusCodes.Status422UnprocessableEntity, unprocessable.StatusCode);
+        _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Once);
+        _mockServiceManager.Verify(s => s.TournamentService.SavePatchTournamentAsync(
+            It.IsAny<TournamentDetail>(), It.IsAny<TournamentUpdateDto>()), Times.Never);
+    }   
+
+    [Fact]
+    public async Task PatchTournamentAsync_TournamentNotFound_ThrowsException()
+    {
+        // Arrange
+        var patchDoc = new JsonPatchDocument<TournamentUpdateDto>();
+
+        _mockTournamentService.Setup(s => s.TournamentToPatchAsync(99))
+            .ThrowsAsync(new TournamentNotFoundException(99));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() =>
+            _tournamentsController.PatchTournamentAsync(99, patchDoc));
+        _mockServiceManager.Verify(s => s.TournamentService.TournamentToPatchAsync(It.IsAny<int>()), Times.Once);
+        _mockServiceManager.Verify(s => s.TournamentService.SavePatchTournamentAsync(
+            It.IsAny<TournamentDetail>(), It.IsAny<TournamentUpdateDto>()), Times.Never);
+    }
+
 
 }
