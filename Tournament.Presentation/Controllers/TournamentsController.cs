@@ -89,7 +89,7 @@ public class TournamentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody]TournamentCreateDto dto)
+    public async Task<ActionResult<TournamentDto>> PostTournament([FromBody]TournamentCreateDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
