@@ -1,8 +1,9 @@
-using Domain.Models.Entities;
+﻿using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Moq;
 using Services.Contracts;
 using Tournament.Presentation.Controllers;
@@ -35,6 +36,17 @@ public class ControllerTournamentUnitTests
         {
             HttpContext = new DefaultHttpContext()
         };
+
+        var mockValidator = new Mock<IObjectModelValidator>();
+        mockValidator.Setup(v =>
+            v.Validate(
+                It.IsAny<ActionContext>(),
+                It.IsAny<ValidationStateDictionary>(),
+                It.IsAny<string>(),
+                It.IsAny<object>())
+        );
+
+        _tournamentsController.ObjectValidator = mockValidator.Object;
     }
 
     
@@ -203,6 +215,19 @@ public class ControllerTournamentUnitTests
 
         _mockTournamentService.Setup(s => s.SavePatchTournamentAsync(entity, dto))
             .Returns(Task.CompletedTask);
+
+        // Setup ControllerContext and ObjectValidator
+        _tournamentsController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var mockValidator = new Mock<IObjectModelValidator>();
+        mockValidator.Setup(v =>
+            v.Validate(It.IsAny<ActionContext>(), It.IsAny<ValidationStateDictionary>(), It.IsAny<string>(), It.IsAny<object>())
+        );
+        _tournamentsController.ObjectValidator = mockValidator.Object;
+
 
         // Act
         var result = await _tournamentsController.PatchTournamentAsync(1, patchDoc);
