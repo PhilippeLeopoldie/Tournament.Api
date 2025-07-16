@@ -89,5 +89,36 @@ public class ControllerTournamentUnitTests
         await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentById(99, false));
     }
 
-    
+    [Fact]
+    public async Task GetTournamentByTitle_ShouldReturnTournament()
+    {
+        // Arrange
+        var dto = new TournamentDto { Id = 1, Title = "Title1", StartDate = _now };
+        _mockServiceManager.Setup(x => x.TournamentService.GetTournamentByTitleAsync(It.IsAny<string>()))
+            .ReturnsAsync(dto);
+
+        // Act
+        var resultDto = await _tournamentsController.GetTournamentByTitleAsync("Title1");
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(resultDto.Result);
+        var okResultDto = Assert.IsType<TournamentDto>(okResult.Value);
+        Assert.Equal("Title1", okResultDto.Title);
+        Assert.Equal(1, okResultDto.Id);
+    }
+
+    [Fact]
+    public async Task GetTournamentByTitle_ShouldReturnNotFound()
+    {
+        // Arrange
+        _mockTournamentService.Setup(s => s.GetTournamentByTitleAsync(It.IsAny<string>()))
+            .ThrowsAsync(new TournamentNotFoundException(99));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentByTitleAsync(It.IsAny<string>()));
+    }
+
+
+
+
 }
