@@ -349,5 +349,35 @@ public class ControllerTournamentUnitTests
         _mockServiceManager.Verify(s => s.TournamentService.PostTournamentAsync(It.IsAny<TournamentCreateDto>()), Times.Never);
     }
 
+    [Fact]
+    public async Task DeleteTournamentAsync_ExistingTournament_ReturnsNoContent()
+    {
+        // Arrange
+        _mockTournamentService
+            .Setup(s => s.DeleteTournamentAsync(1))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _tournamentsController.DeleteTournamentAsync(1);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
+        _mockServiceManager.Verify(s => s.TournamentService.DeleteTournamentAsync(1), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteTournamentAsync_TournamentNotFound_ThrowsTournamentNotFoundException()
+    {
+        // Arrange
+        _mockTournamentService
+            .Setup(s => s.DeleteTournamentAsync(99))
+            .ThrowsAsync(new TournamentNotFoundException(99));
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() =>
+            _tournamentsController.DeleteTournamentAsync(99));
+
+        _mockServiceManager.Verify(s => s.TournamentService.DeleteTournamentAsync(99), Times.Once);
+    }
 
 }
