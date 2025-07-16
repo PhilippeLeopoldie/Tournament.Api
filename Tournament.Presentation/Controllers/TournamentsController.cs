@@ -96,8 +96,10 @@ public class TournamentsController : ControllerBase
         var createdTournament = await _serviceManager.TournamentService.PostTournamentAsync(dto);
         return CreatedAtAction("GetTournamentById", new { id = createdTournament.Id }, createdTournament);
     }
-    
+
     // DELETE: api/Tournaments/5
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentAsync(int id)
     {
