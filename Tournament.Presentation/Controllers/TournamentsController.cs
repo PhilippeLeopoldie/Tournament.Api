@@ -98,7 +98,7 @@ public class TournamentsController : ControllerBase
     }
 
     // DELETE: api/Tournaments/5
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentAsync(int id)
