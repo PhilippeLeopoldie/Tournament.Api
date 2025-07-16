@@ -57,6 +57,12 @@ public class ControllerTournamentUnitTests
         var okResult = Assert.IsType<OkObjectResult>(tournamentsDto.Result);
         var okResultTournamentsDto = Assert.IsAssignableFrom<IEnumerable<TournamentDto>>(okResult.Value);
         Assert.Equal(3, okResultTournamentsDto.Count());
+        _mockServiceManager.Verify(s => s.TournamentService.GetAllTournamentsAsync(
+            It.IsAny<TournamentRequestParams>(),
+            It.IsAny<bool>(),
+            It.IsAny<bool>()),
+            Times.Once()
+            );
     }
 
     [Fact]
@@ -75,7 +81,8 @@ public class ControllerTournamentUnitTests
         var okResultDto = Assert.IsType<TournamentDto>(okResult.Value);
         Assert.Equal("Title1", okResultDto.Title);
         Assert.Equal(1, okResultDto.Id);
-
+        _mockServiceManager.Verify(s =>
+        s.TournamentService.GetTournamentByIdAsync(It.IsAny<int>(), It.IsAny<bool>()), Times.Once());
     }
 
     [Fact]
@@ -87,6 +94,8 @@ public class ControllerTournamentUnitTests
 
         // Act & Assert
         await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentById(99, false));
+        _mockServiceManager.Verify(s => 
+        s.TournamentService.GetTournamentByIdAsync(It.IsAny<int>(), It.IsAny<bool>()), Times.Once());
     }
 
     [Fact]
@@ -105,6 +114,7 @@ public class ControllerTournamentUnitTests
         var okResultDto = Assert.IsType<TournamentDto>(okResult.Value);
         Assert.Equal("Title1", okResultDto.Title);
         Assert.Equal(1, okResultDto.Id);
+        _mockServiceManager.Verify(s => s.TournamentService.GetTournamentByTitleAsync(It.IsAny<string>()), Times.Once());
     }
 
     [Fact]
@@ -115,7 +125,9 @@ public class ControllerTournamentUnitTests
             .ThrowsAsync(new TournamentNotFoundException(99));
 
         // Act & Assert
-        await Assert.ThrowsAsync<TournamentNotFoundException>(() => _tournamentsController.GetTournamentByTitleAsync(It.IsAny<string>()));
+        await Assert.ThrowsAsync<TournamentNotFoundException>(() => 
+        _tournamentsController.GetTournamentByTitleAsync(It.IsAny<string>()));
+        _mockServiceManager.Verify(s => s.TournamentService.GetTournamentByTitleAsync(It.IsAny<string>()), Times.Once());
     }
 
 
