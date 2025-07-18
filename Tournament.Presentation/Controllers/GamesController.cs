@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
@@ -14,10 +15,13 @@ namespace Tournament.Presentation.Controllers
 
         public GamesController(IServiceManager serviceManager)
         {
-            _serviceManager = serviceManager;
+            _serviceManager = serviceManager ??
+                throw new ArgumentNullException(nameof(serviceManager));
         }
 
         // GET: api/Games
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesAsync([FromQuery]int tournamentId, bool sortByTitle)
         {
@@ -26,6 +30,8 @@ namespace Tournament.Presentation.Controllers
         }
 
         // GET: api/Games/5
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GameDto>> GetGameById(int id)
         {
@@ -33,6 +39,9 @@ namespace Tournament.Presentation.Controllers
             return Ok(gameDto);
         }
 
+        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("title")]
         public async Task<ActionResult<GameDto>> GetGameByTitleAsync(string title)
         {
@@ -42,6 +51,9 @@ namespace Tournament.Presentation.Controllers
 
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGameAsync(int id, GameUpdateDto dto)
         {
@@ -49,7 +61,11 @@ namespace Tournament.Presentation.Controllers
             await _serviceManager.GameService.PutGameAsync(id, dto);
             return NoContent();
         }
-        
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPatch("{id:int}")]
         public async Task<ActionResult> PatchGameAsync(int id, int tournamentId, JsonPatchDocument<GameUpdateDto> patchDocument)
         {
@@ -67,6 +83,8 @@ namespace Tournament.Presentation.Controllers
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult<GameDto>> PostGameAsync([FromBody]GameCreateDto dto)
         {
@@ -77,6 +95,8 @@ namespace Tournament.Presentation.Controllers
         }
 
         // DELETE: api/Games/5
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGameAsync(int id, int tournamentId)
         {
