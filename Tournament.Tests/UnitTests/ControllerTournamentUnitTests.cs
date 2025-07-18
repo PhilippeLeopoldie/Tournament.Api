@@ -1,14 +1,14 @@
-﻿using Domain.Models.Entities;
-using Domain.Models.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Moq;
 using Services.Contracts;
+using Tournament.Core.Dtos;
+using Tournament.Core.Entities;
+using Tournament.Core.Exceptions;
+using Tournament.Core.Request;
 using Tournament.Presentation.Controllers;
-using Tournaments.Shared.Dtos;
-using Tournaments.Shared.Request;
 
 namespace Tournament.Tests.UnitTests;
 

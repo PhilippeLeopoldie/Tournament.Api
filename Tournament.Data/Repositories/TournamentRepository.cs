@@ -1,8 +1,8 @@
-﻿using Domain.Contracts;
-using Domain.Models.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tournament.Infrastructure.Data;
-using Tournaments.Shared.Request;
+using Tournament.Core.Contracts;
+using Tournament.Core.Entities;
+using Tournament.Core.Request;
 
 namespace Tournament.Infrastructure.Repositories;
 

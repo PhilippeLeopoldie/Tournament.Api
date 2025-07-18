@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Services.Contracts;
+using Tournament.Core.Entities;
 using Tournament.Infrastructure.Data;
 using Tournament.Infrastructure.Repositories;
 using Tournament.Presentation.Controllers;

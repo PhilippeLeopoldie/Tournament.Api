@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain.Models\Domain.Models.csproj" />
-    <ProjectReference Include="..\Tournaments.Shared\Tournaments.Shared.csproj" />
+    <ProjectReference Include="..\Tournament.Core\Tournament.Core.csproj" />
   </ItemGroup>
 
 </Project>

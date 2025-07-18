@@ -1,8 +1,8 @@
 ﻿using Bogus;
-using Domain.Models.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Tournament.Core.Entities;
 
 namespace Tournament.Infrastructure.Data;
 

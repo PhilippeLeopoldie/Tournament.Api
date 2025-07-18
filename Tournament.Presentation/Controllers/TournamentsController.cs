@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Tournaments.Shared.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
-using Tournaments.Shared.Request;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Domain.Models.Exceptions;
+using Tournament.Core.Exceptions;
+using Tournament.Core.Dtos;
+using Tournament.Core.Request;
 
 namespace Tournament.Presentation.Controllers;
 

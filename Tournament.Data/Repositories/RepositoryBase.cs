@@ -1,5 +1,4 @@
-﻿using Domain.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Tournament.Infrastructure.Data;
+using Tournament.Core.Contracts;
 
 namespace Tournament.Infrastructure.Repositories;
 

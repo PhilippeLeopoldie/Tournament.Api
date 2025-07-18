@@ -1,5 +1,4 @@
-﻿
-namespace Domain.Models.Exceptions;
+﻿namespace Tournament.Core.Exceptions;
 
 public abstract class BadRequestException : Exception
 {

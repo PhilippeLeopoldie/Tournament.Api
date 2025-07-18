@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Domain.Contracts;
-using Domain.Models.Entities;
-using Domain.Models.Exceptions;
 using Services.Contracts;
-using Tournaments.Shared.Dtos;
-using Tournaments.Shared.Request;
+using Tournament.Core.Contracts;
+using Tournament.Core.Dtos;
+using Tournament.Core.Entities;
+using Tournament.Core.Request;
+using Tournament.Core.Exceptions;
 
 namespace Tournament.Services;
 

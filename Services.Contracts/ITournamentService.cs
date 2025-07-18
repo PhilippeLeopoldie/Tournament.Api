@@ -1,6 +1,6 @@
-﻿using Domain.Models.Entities;
-using Tournaments.Shared.Dtos;
-using Tournaments.Shared.Request;
+﻿using Tournament.Core.Dtos;
+using Tournament.Core.Entities;
+using Tournament.Core.Request;
 
 namespace Services.Contracts;
 

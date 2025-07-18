@@ -1,10 +1,10 @@
-﻿using Domain.Models.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tournaments.Shared.Dtos;
+using Tournament.Core.Dtos;
+using Tournament.Core.Entities;
 
 namespace Tournament.Tests.UnitTests;
 

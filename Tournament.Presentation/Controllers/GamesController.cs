@@ -1,9 +1,9 @@
-﻿using Domain.Models.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Tournaments.Shared.Dtos;
+using Tournament.Core.Dtos;
+using Tournament.Core.Exceptions;
 
 namespace Tournament.Presentation.Controllers
 {
